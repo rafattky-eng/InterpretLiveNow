@@ -18,32 +18,31 @@
 <link rel="apple-touch-icon" sizes="152x152" href="icon-152.png">
 <link rel="apple-touch-icon" sizes="167x167" href="icon-167.png">
 <link rel="apple-touch-icon" sizes="180x180" href="icon-180.png">
-<link rel="stylesheet" href="style.css?v=1.0.2">
+<link rel="stylesheet" href="style.css?v=1.0.3">
 </head>
 <body>
 <header class="app-head">
-  <div class="brand">
-    <img src="icon-192.png" alt="InterpretLiveNow logo" width="52" height="52">
-    <h1><span class="t1">Interpret</span><span class="t2">Live</span><span class="t3">Now</span></h1>
-  </div>
-  <div class="bar">
-    <p id="stepLabel" class="step"></p>
-    <div class="tools">
-      <div class="ui-lang" role="group" aria-label="Interface language">
-        <button type="button" data-ui="en" class="on">EN</button>
-        <button type="button" data-ui="ja">JP</button>
-      </div>
-      <button type="button" id="btnReset" class="tool" aria-label="Reset" title="Reset">🔄</button>
-      <button type="button" id="btnSave" class="tool" aria-label="Save" title="Save">💾</button>
+  <img class="logo" src="icon-192.png" alt="InterpretLiveNow logo" width="46" height="46">
+  <h1>InterpretLive<span>Now</span></h1>
+  <div class="tools">
+    <div class="ui-lang" role="group" aria-label="Interface language">
+      <button type="button" data-ui="en" class="on">EN</button>
+      <button type="button" data-ui="ja">JP</button>
     </div>
+    <button type="button" id="btnReset" class="tool" aria-label="Reset" title="Reset">🔄</button>
+    <button type="button" id="btnSave" class="tool" aria-label="Save" title="Save">💾</button>
   </div>
 </header>
 
+<section class="pagehead">
+  <h2 id="pageTitle">Translate</h2>
+  <p id="pageSub"></p>
+</section>
+
 <main>
-  <div class="hero"><img src="logo-480.png" alt="InterpretLiveNow" width="132" height="132"></div>
   <div id="installCard" class="card install" hidden>
     <strong data-i18n="installTitle">Install on iPhone</strong>
-    <p data-i18n="installBody">Tap Share, then “Add to Home Screen”.</p>
+    <p data-i18n="installBody">In Safari tap Share, then “Add to Home Screen”.</p>
     <button type="button" id="installClose" class="ghost" data-i18n="gotIt">Got it</button>
   </div>
 
@@ -56,15 +55,26 @@
         <button type="button" id="swap" class="swap" aria-label="Swap languages">⇄</button>
         <div class="pill to" id="toPill">English</div>
       </div>
-      <div class="row sound">
-        <button type="button" id="testSound" class="ghost" data-i18n="test">🔈 Test sound</button>
-        <select id="rate" aria-label="Speech speed">
-          <option value="0.7" data-i18n="slow">Slow</option>
-          <option value="0.95" data-i18n="normal" selected>Normal</option>
-          <option value="1.2" data-i18n="fast">Fast</option>
-        </select>
-        <label class="switch"><input type="checkbox" id="autoSpeak" checked> <span data-i18n="autoSpeak">Speak automatically</span></label>
-      </div>
+      <details class="settings">
+        <summary data-i18n="settings">🔊 Sound &amp; settings</summary>
+        <div class="row">
+          <button type="button" id="testVoice" class="accent" data-i18n="testVoice">🔈 Test voice</button>
+          <button type="button" id="testBeep" class="ghost" data-i18n="testBeep">🔔 Beep</button>
+        </div>
+        <label class="field"><span data-i18n="speed">Speed</span>
+          <select id="rate">
+            <option value="0.7" data-i18n="slow">Slow</option>
+            <option value="0.95" data-i18n="normal" selected>Normal</option>
+            <option value="1.2" data-i18n="fast">Fast</option>
+          </select></label>
+        <label class="field"><span data-i18n="voiceEn">English voice</span><select id="voice_en"></select></label>
+        <label class="field"><span data-i18n="voiceJa">Japanese voice</span><select id="voice_ja"></select></label>
+        <label class="check"><input type="checkbox" id="autoSpeak" checked> <span data-i18n="autoSpeak">Speak automatically</span></label>
+        <label class="check"><input type="checkbox" id="bypass" checked> <span data-i18n="bypass">Play even if the silent switch is on</span></label>
+        <label class="field"><span data-i18n="keyLabel">Better translation (optional)</span>
+          <input type="password" id="gkey" placeholder="Google Cloud Translation API key" autocomplete="off" autocapitalize="off" spellcheck="false"></label>
+        <p class="hint" data-i18n="keyHint">Without a key the app uses free services and switches between them automatically.</p>
+      </details>
       <p id="soundMsg" class="status" role="status" aria-live="polite"></p>
     </div>
 
@@ -74,12 +84,13 @@
       <div class="row">
         <button type="button" id="paste" class="ghost" data-i18n="paste">📋 Paste</button>
         <button type="button" id="clearSrc" class="ghost" data-i18n="clear">Clear</button>
-        <label class="switch"><input type="checkbox" id="autoStop"> <span data-i18n="autoStop">Auto at full stop</span></label>
+        <label class="check right"><input type="checkbox" id="autoStop"> <span data-i18n="autoStop">Auto at full stop</span></label>
       </div>
       <button type="button" id="go" class="primary" data-i18n="go">🔊 Translate &amp; Speak</button>
       <p id="status" class="status" role="status" aria-live="polite"></p>
       <div class="result" id="out" hidden>
-        <div class="result-text" id="outText" lang="en"></div>
+        <div class="result-text" id="outText"></div>
+        <p class="via" id="via"></p>
         <div class="row">
           <button type="button" id="speakOut" class="accent" data-i18n="speak">🔊 Speak</button>
           <button type="button" id="stopOut" class="ghost" data-i18n="stop">⏹ Stop</button>
@@ -93,17 +104,23 @@
   <!-- REPLY: step 3 -->
   <section id="view-reply" class="view">
     <div class="card">
-      <h2><span class="badge">3</span> <span id="replyTitle">Record the reply</span></h2>
+      <h2><span class="badge">3</span> <span data-i18n="replyTitle">Record the reply</span></h2>
       <p class="hint" id="replyHint"></p>
       <button type="button" id="rec" class="rec"><span class="recdot"></span><span id="recLabel">Record reply</span></button>
+      <div id="dictHint" class="tip" hidden>
+        <strong data-i18n="dictTitle">🎤 Use the keyboard microphone</strong>
+        <p data-i18n="dictBody">Tap the 🎤 key at the bottom right of the keyboard, speak, then tap Done. The translation starts by itself. Tip: add the Japanese keyboard in Settings → General → Keyboard, and switch with the 🌐 key.</p>
+      </div>
       <textarea id="reply" rows="4" placeholder="The reply appears here. You can also type, paste, or use the 🎤 key on the iPhone keyboard."></textarea>
       <div class="row">
         <button type="button" id="clearReply" class="ghost" data-i18n="clear">Clear</button>
+        <label class="check"><input type="checkbox" id="autoReply" checked> <span data-i18n="autoReply">Auto translate</span></label>
         <button type="button" id="goReply" class="primary slim" data-i18n="translate">Translate</button>
       </div>
       <p id="status2" class="status" role="status" aria-live="polite"></p>
       <div class="result" id="out2" hidden>
         <div class="result-text" id="outText2"></div>
+        <p class="via" id="via2"></p>
         <div class="row">
           <button type="button" id="speakOut2" class="accent" data-i18n="speak">🔊 Speak</button>
           <button type="button" id="stopOut2" class="ghost" data-i18n="stop">⏹ Stop</button>
@@ -116,7 +133,6 @@
   <!-- HISTORY -->
   <section id="view-history" class="view">
     <div class="card">
-      <h2 data-i18n="history">History</h2>
       <ol id="hist" class="hist"></ol>
       <button type="button" id="clearHist" class="ghost" data-i18n="clearHist">Clear history</button>
     </div>
@@ -125,7 +141,7 @@
 
 <footer class="foot">
   <div>© 2026 Rafat Kotaki. All rights reserved.</div>
-  <div>InterpretLiveNow · V1.0.2</div>
+  <div>InterpretLiveNow · V1.0.3</div>
 </footer>
 
 <nav class="tabs" aria-label="Main">
@@ -135,6 +151,6 @@
 </nav>
 
 <div id="toast" class="toast" role="status" aria-live="polite"></div>
-<script src="app.js?v=1.0.2"></script>
+<script src="app.js?v=1.0.3"></script>
 </body>
 </html>
