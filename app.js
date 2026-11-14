@@ -1,6 +1,19 @@
 (() => {
   "use strict";
   const $ = id => document.getElementById(id);
+
+  // Surface JavaScript startup/runtime failures instead of leaving controls silent.
+  window.addEventListener("error", event => {
+    const msg = event && event.message ? event.message : "Unknown JavaScript error";
+    const status = $("soundMsg");
+    if (status) { status.textContent = "App error: " + msg; status.classList.add("err"); }
+  });
+  window.addEventListener("unhandledrejection", event => {
+    const reason = event && event.reason;
+    const msg = reason && reason.message ? reason.message : String(reason || "Unknown async error");
+    const status = $("soundMsg");
+    if (status) { status.textContent = "App error: " + msg; status.classList.add("err"); }
+  });
   const LANG = {
     ja: { name: "日本語", tts: "ja-JP", sr: "ja-JP", mm: "ja", short: "ja" },
     en: { name: "English", tts: "en-US", sr: "en-US", mm: "en", short: "en" }
@@ -202,6 +215,8 @@
   }
 
   function speak(text, code, onFinish) {
+    soundMsg("Preparing " + (String(code || "").startsWith("ja") ? "Japanese" : "English") + " voice…", false);
+    unlockSpeechFromGesture();
     const clean = String(text || "").trim();
     if (!clean) {
       soundMsg("Nothing to speak yet. Translate some text first.", true);
@@ -333,10 +348,14 @@
 
   $("testBeep").onclick = () => { playBeepFromTap(); };
   $("testVoice").onclick = () => {
+    soundMsg("Test Voice button received. Starting speech…", false);
+    unlockSpeechFromGesture();
     const code = LANG[dir[1]].tts;
     speak(dir[1] === "ja" ? "音声テストです。聞こえますか？" : "This is a voice test. Can you hear me?", code);
   };
   $("testBoth").onclick = () => {
+    soundMsg("Starting Japanese + English voice test…", false);
+    unlockSpeechFromGesture();
     speak("音声テストです。聞こえますか？", "ja-JP", () => {
       speak("This is the English voice test. Can you hear me?", "en-US");
     });
@@ -524,4 +543,5 @@
   $("installClose").onclick = () => { $("installCard").hidden = true; store.set("ilnInstallSeen", true); };
   if ("serviceWorker" in navigator) navigator.serviceWorker.register("sw.js").catch(() => {});
   applyUI();
+  soundMsg("App ready. Tap Test Voice to check audio.", false);
 })();
