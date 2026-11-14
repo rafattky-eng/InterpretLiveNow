@@ -1,4 +1,4 @@
-const CACHE = "interpretlivenow-v1.0.1";
+const CACHE = "interpretlivenow-v1.0.2";
 const ASSETS = ["./","index.html","style.css","app.js","manifest.webmanifest","icon-180.png","icon-192.png","icon-512.png","maskable-512.png","favicon-32.png","logo-480.png"];
 self.addEventListener("install", e => { e.waitUntil(caches.open(CACHE).then(c => c.addAll(ASSETS))); self.skipWaiting(); });
 self.addEventListener("activate", e => {
@@ -8,5 +8,5 @@ self.addEventListener("activate", e => {
 self.addEventListener("fetch", e => {
   if (e.request.method !== "GET" || new URL(e.request.url).origin !== location.origin) return;
   e.respondWith(fetch(e.request).then(r => { const c = r.clone(); caches.open(CACHE).then(x => x.put(e.request, c)); return r; })
-    .catch(() => caches.match(e.request).then(r => r || caches.match("index.html"))));
+    .catch(() => caches.match(e.request,{ignoreSearch:true}).then(r => r || caches.match("index.html"))));
 });

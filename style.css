@@ -6,15 +6,21 @@
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
 html,body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--font);-webkit-text-size-adjust:100%}
 body{max-width:640px;margin:0 auto;padding:0 14px calc(150px + env(safe-area-inset-bottom))}
-.app-head{position:sticky;top:0;z-index:5;display:flex;align-items:center;gap:12px;
-  padding:calc(10px + env(safe-area-inset-top)) 0 10px;background:linear-gradient(var(--bg) 85%,transparent)}
-.app-head img{border-radius:11px;box-shadow:0 0 14px rgba(60,200,255,.35)}
-.titles{flex:1;min-width:0}
-h1{margin:0;font-size:1.2rem;font-weight:800;letter-spacing:-.01em}
-.step{margin:2px 0 0;font-size:.8rem;color:var(--amber);font-weight:600}
-.ui-lang{display:flex;border:1px solid var(--line);border-radius:10px;overflow:hidden}
-.ui-lang button{background:none;border:0;color:var(--mute);padding:7px 10px;font:inherit;font-size:.8rem;font-weight:700}
-.ui-lang button.on{background:var(--blue);color:var(--bg)}
+.app-head{position:sticky;top:0;z-index:5;padding:calc(10px + env(safe-area-inset-top)) 0 8px;background:linear-gradient(var(--bg) 88%,transparent)}
+.brand{display:flex;align-items:center;gap:12px}
+.brand img{border-radius:14px;box-shadow:0 0 16px rgba(60,200,255,.4)}
+h1{margin:0;font-size:1.75rem;font-weight:900;letter-spacing:-.02em;line-height:1.1}
+.t1{color:#fff}.t2{color:var(--amber)}.t3{color:var(--red);text-shadow:0 0 12px rgba(255,45,61,.7)}
+.bar{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-top:10px}
+.step{margin:0;font-size:.78rem;color:var(--mute);font-weight:600;flex:1;min-width:0}
+.tools{display:flex;align-items:center;gap:8px}
+.ui-lang{display:flex;border:1px solid var(--line);border-radius:14px;overflow:hidden;background:var(--bg2)}
+.ui-lang button{background:none;border:0;color:var(--mute);padding:0 14px;height:44px;font:inherit;font-size:.95rem;font-weight:900}
+.ui-lang button.on{background:#f5b400;color:#000}
+.tool{width:46px;height:46px;border-radius:14px;border:1px solid var(--line);background:#10294d;font-size:1.4rem;padding:0;line-height:1}
+.tool:active{background:var(--card)}
+.toast{position:fixed;left:50%;bottom:calc(84px + env(safe-area-inset-bottom));transform:translateX(-50%);background:var(--amber);color:var(--bg);font-weight:800;padding:10px 16px;border-radius:12px;opacity:0;pointer-events:none;transition:opacity .2s;z-index:9;max-width:90%;text-align:center}
+.toast.on{opacity:1}
 .card{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:16px;margin:12px 0}
 h2{margin:0 0 12px;font-size:1.02rem;display:flex;align-items:center;gap:8px}
 .badge{display:inline-grid;place-items:center;width:24px;height:24px;border-radius:50%;background:var(--amber);color:var(--bg);font-size:.8rem;font-weight:800}
@@ -53,7 +59,6 @@ button{font:inherit;cursor:pointer}
 .install{border-color:var(--amber)}
 .install p{margin:6px 0 10px;color:var(--mute)}
 .foot{text-align:center;color:var(--mute);font-size:.8rem;line-height:1.6;padding:18px 0 8px}
-.mode{margin-top:4px;font-size:.72rem;opacity:.8}
 .tabs{position:fixed;left:0;right:0;bottom:0;z-index:6;display:flex;justify-content:space-around;
   background:var(--bg2);border-top:1px solid var(--line);padding:6px 8px calc(6px + env(safe-area-inset-bottom))}
 .tabs button{flex:1;background:none;border:0;color:var(--mute);display:grid;justify-items:center;gap:2px;padding:6px 0}

@@ -18,18 +18,24 @@
 <link rel="apple-touch-icon" sizes="152x152" href="icon-152.png">
 <link rel="apple-touch-icon" sizes="167x167" href="icon-167.png">
 <link rel="apple-touch-icon" sizes="180x180" href="icon-180.png">
-<link rel="stylesheet" href="style.css">
+<link rel="stylesheet" href="style.css?v=1.0.2">
 </head>
 <body>
 <header class="app-head">
-  <img src="icon-192.png" alt="InterpretLiveNow logo" width="44" height="44">
-  <div class="titles">
-    <h1>InterpretLiveNow</h1>
-    <p id="stepLabel" class="step"></p>
+  <div class="brand">
+    <img src="icon-192.png" alt="InterpretLiveNow logo" width="52" height="52">
+    <h1><span class="t1">Interpret</span><span class="t2">Live</span><span class="t3">Now</span></h1>
   </div>
-  <div class="ui-lang" role="group" aria-label="Interface language">
-    <button type="button" data-ui="en" class="on">EN</button>
-    <button type="button" data-ui="ja">JP</button>
+  <div class="bar">
+    <p id="stepLabel" class="step"></p>
+    <div class="tools">
+      <div class="ui-lang" role="group" aria-label="Interface language">
+        <button type="button" data-ui="en" class="on">EN</button>
+        <button type="button" data-ui="ja">JP</button>
+      </div>
+      <button type="button" id="btnReset" class="tool" aria-label="Reset" title="Reset">🔄</button>
+      <button type="button" id="btnSave" class="tool" aria-label="Save" title="Save">💾</button>
+    </div>
   </div>
 </header>
 
@@ -119,8 +125,7 @@
 
 <footer class="foot">
   <div>© 2026 Rafat Kotaki. All rights reserved.</div>
-  <div>InterpretLiveNow · V1.0.1</div>
-  <div id="mode" class="mode"></div>
+  <div>InterpretLiveNow · V1.0.2</div>
 </footer>
 
 <nav class="tabs" aria-label="Main">
@@ -129,6 +134,7 @@
   <button type="button" data-tab="history"><span>🕘</span><em data-i18n="tabHistory">History</em></button>
 </nav>
 
-<script src="app.js"></script>
+<div id="toast" class="toast" role="status" aria-live="polite"></div>
+<script src="app.js?v=1.0.2"></script>
 </body>
 </html>

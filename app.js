@@ -160,9 +160,22 @@
     };
     busy ? setTimeout(go, 120) : go();
   }
+  let actx;
+  function beep(){
+    try {
+      actx = actx || new (window.AudioContext || window.webkitAudioContext)();
+      if (actx.state === "suspended") actx.resume();
+      const o = actx.createOscillator(), g = actx.createGain();
+      o.frequency.value = 880; g.gain.value = 0.2; o.connect(g); g.connect(actx.destination);
+      o.start(); o.stop(actx.currentTime + 0.25); return true;
+    } catch { return false; }
+  }
   $("testSound").onclick = () => {
+    unlock();
+    const ok = beep();
+    soundMsg(ok ? "🔔 Beep… then voice. No beep? Raise the volume and turn the silent switch off." : "Audio unavailable in this browser.", !ok);
     const code = LANG[dir[1]].tts;
-    speak(dir[1] === "ja" ? "音声テストです。聞こえますか？" : "Sound test. Can you hear me?", code);
+    setTimeout(() => speak(dir[1] === "ja" ? "音声テストです。聞こえますか？" : "Sound test. Can you hear me?", code), 400);
   };
   $("rate").value = store.get("ilnRate", "0.95");
   $("rate").onchange = e => store.set("ilnRate", e.target.value);
@@ -259,10 +272,38 @@
   }
   $("clearHist").onclick = () => { hist = []; store.set("ilnHist", hist); renderHist(); };
 
+  /* ---------- Toast, Reset, Save ---------- */
+  let toastT;
+  function toast(m){ const t = $("toast"); t.textContent = m; t.classList.add("on"); clearTimeout(toastT); toastT = setTimeout(() => t.classList.remove("on"), 2200); }
+  $("btnReset").onclick = () => {
+    stopSpeech();
+    $("src").value = ""; $("reply").value = "";
+    hide("out"); hide("out2"); setStatus("status", ""); setStatus("status2", ""); setStatus("soundMsg", "");
+    lastOut = lastOut2 = ""; lastDone = ""; showTab("translate");
+    toast(ui === "ja" ? "リセットしました" : "Reset done");
+  };
+  function sessionText(){
+    const L = x => LANG[x].name, out = [];
+    const a = $("src").value.trim(), b = lastOut, c = $("reply").value.trim(), d = lastOut2;
+    if (a || b) out.push(L(dir[0]) + " → " + L(dir[1]) + "\n" + a + "\n=> " + b);
+    if (c || d) out.push(L(dir[1]) + " → " + L(dir[0]) + "\n" + c + "\n=> " + d);
+    return out.length ? "InterpretLiveNow\n" + new Date().toLocaleString() + "\n\n" + out.join("\n\n") + "\n\n© 2026 Rafat Kotaki. All rights reserved.\n" : "";
+  }
+  $("btnSave").onclick = async () => {
+    const t = sessionText();
+    if (!t){ toast(ui === "ja" ? "保存する内容がありません" : "Nothing to save yet"); return; }
+    const name = "InterpretLiveNow-" + new Date().toISOString().slice(0, 16).replace(/[:T]/g, "-") + ".txt";
+    const file = new File([t], name, { type: "text/plain" });
+    try {
+      if (navigator.canShare && navigator.canShare({ files: [file] })){ await navigator.share({ files: [file], title: "InterpretLiveNow" }); toast(ui === "ja" ? "保存しました" : "Saved"); return; }
+    } catch (e) { if (e && e.name === "AbortError") return; }
+    const a = document.createElement("a"); a.href = URL.createObjectURL(file); a.download = name; document.body.appendChild(a); a.click(); a.remove();
+    toast(ui === "ja" ? "保存しました" : "Saved");
+  };
+
   /* ---------- Install status ---------- */
   const standalone = window.navigator.standalone === true || matchMedia("(display-mode: standalone)").matches;
   const isIOS = /iphone|ipad|ipod/i.test(navigator.userAgent) || (navigator.platform === "MacIntel" && navigator.maxTouchPoints > 1);
-  $("mode").textContent = standalone ? "✓ Installed app mode" : "Running in browser · not installed";
   if (!standalone && isIOS && !store.get("ilnInstallSeen", false)) $("installCard").hidden = false;
   $("installClose").onclick = () => { $("installCard").hidden = true; store.set("ilnInstallSeen", true); };
 
