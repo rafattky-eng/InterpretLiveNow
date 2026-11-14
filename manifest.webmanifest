@@ -1,0 +1,18 @@
+{
+  "id": "./",
+  "name": "InterpretLiveNow",
+  "short_name": "InterpretLive",
+  "description": "Japanese ⇄ English live interpreter.",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#071B35",
+  "theme_color": "#071B35",
+  "lang": "en",
+  "icons": [
+    { "src": "icons/icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
+    { "src": "icons/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" },
+    { "src": "icons/maskable-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+  ]
+}

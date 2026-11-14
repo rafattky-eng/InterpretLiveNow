@@ -1,91 +1,123 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <meta name="apple-mobile-web-app-title" content="InterpretLive">
-    <meta name="theme-color" content="#0a1128">
-    <meta name="mobile-web-app-capable" content="yes">
-    <title>InterpretLiveNow</title>
-    
-    <!-- PWA Manifest -->
-    <link rel="manifest" href="manifest.json">
-    <link rel="apple-touch-icon" href="logo.png">
-    <link rel="icon" type="image/png" href="logo.png">
-    
-    <!-- Styles -->
-    <link rel="stylesheet" href="style.css">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>InterpretLiveNow</title>
+<meta name="description" content="Japanese ⇄ English live interpreter. Type, paste or speak, then hear the translation.">
+<meta name="application-name" content="InterpretLiveNow">
+<meta name="theme-color" content="#071B35">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="InterpretLiveNow">
+<meta name="format-detection" content="telephone=no">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="icons/favicon-32.png" sizes="32x32">
+<link rel="apple-touch-icon" href="icons/icon-180.png">
+<link rel="apple-touch-icon" sizes="152x152" href="icons/icon-152.png">
+<link rel="apple-touch-icon" sizes="167x167" href="icons/icon-167.png">
+<link rel="apple-touch-icon" sizes="180x180" href="icons/icon-180.png">
+<link rel="stylesheet" href="style.css">
 </head>
 <body>
+<header class="app-head">
+  <img src="icons/icon-192.png" alt="InterpretLiveNow logo" width="44" height="44">
+  <div class="titles">
+    <h1>InterpretLiveNow</h1>
+    <p id="stepLabel" class="step"></p>
+  </div>
+  <div class="ui-lang" role="group" aria-label="Interface language">
+    <button type="button" data-ui="en" class="on">EN</button>
+    <button type="button" data-ui="ja">JP</button>
+  </div>
+</header>
 
-    <div class="app-container">
-        <!-- Header -->
-        <header class="header">
-            <img src="logo.png" alt="InterpretLiveNow Logo" class="app-logo">
-            <h1>InterpretLiveNow</h1>
-        </header>
+<main>
+  <div id="installCard" class="card install" hidden>
+    <strong data-i18n="installTitle">Install on iPhone</strong>
+    <p data-i18n="installBody">Tap Share, then “Add to Home Screen”.</p>
+    <button type="button" id="installClose" class="ghost" data-i18n="gotIt">Got it</button>
+  </div>
 
-        <!-- Step 1: Language Selection -->
-        <section class="card">
-            <h2>1. Select Languages</h2>
-            <div class="lang-selector">
-                <select id="sourceLang">
-                    <option value="ja-JP">Japanese (日本語)</option>
-                    <option value="en-US">English</option>
-                </select>
-                <button id="swapLangBtn" class="swap-btn" aria-label="Swap Languages">↔️</button>
-                <select id="targetLang">
-                    <option value="en-US">English</option>
-                    <option value="ja-JP">Japanese (日本語)</option>
-                </select>
-            </div>
-        </section>
-
-        <!-- Step 2: Text Translation -->
-        <section class="card">
-            <h2>2. Type & Translate</h2>
-            <textarea id="inputText" placeholder="Type or paste text here..." rows="4"></textarea>
-            <div class="button-group">
-                <button id="speakInputBtn" class="btn-secondary">🔊 Speak Input</button>
-                <button id="translateBtn" class="btn-primary">Translate ➔</button>
-            </div>
-            
-            <div id="outputContainer" class="output-box hidden">
-                <p id="translatedText"></p>
-                <button id="speakOutputBtn" class="btn-accent">🔊 Speak Translation</button>
-            </div>
-        </section>
-
-        <!-- Step 3: Voice Reply -->
-        <section class="card">
-            <h2>3. Voice Reply</h2>
-            <p class="instruction">Tap the mic, speak the reply, and it will auto-translate and speak.</p>
-            <button id="recordBtn" class="btn-record">🎤 Tap to Record Reply</button>
-            <div id="replyOutput" class="output-box hidden">
-                <p id="replyText"></p>
-                <button id="speakReplyBtn" class="btn-accent">🔊 Speak Reply</button>
-            </div>
-        </section>
-
-        <!-- Footer -->
-        <footer class="footer">
-            <p>© 2026 Rafat Kotaki. All rights reserved.</p>
-            <p>InterpretLiveNow · V1.0.0</p>
-        </footer>
+  <!-- TRANSLATE: steps 1 + 2 -->
+  <section id="view-translate" class="view on">
+    <div class="card">
+      <h2><span class="badge">1</span> <span data-i18n="s1">Select language</span></h2>
+      <div class="dir">
+        <div class="pill from" id="fromPill">日本語</div>
+        <button type="button" id="swap" class="swap" aria-label="Swap languages">⇄</button>
+        <div class="pill to" id="toPill">English</div>
+      </div>
     </div>
 
-    <script src="app.js"></script>
-    <script>
-        // Register Service Worker for PWA
-        if ('serviceWorker' in navigator) {
-            window.addEventListener('load', () => {
-                navigator.serviceWorker.register('./sw.js')
-                    .then(reg => console.log('SW registered', reg.scope))
-                    .catch(err => console.log('SW registration failed', err));
-            });
-        }
-    </script>
+    <div class="card">
+      <h2><span class="badge">2</span> <span data-i18n="s2">Type or paste text</span></h2>
+      <textarea id="src" rows="5" autocapitalize="sentences" placeholder="Type a letter, number, word, question or paragraph…"></textarea>
+      <div class="row">
+        <button type="button" id="paste" class="ghost" data-i18n="paste">📋 Paste</button>
+        <button type="button" id="clearSrc" class="ghost" data-i18n="clear">Clear</button>
+        <label class="switch"><input type="checkbox" id="autoStop"> <span data-i18n="autoStop">Auto at full stop</span></label>
+      </div>
+      <button type="button" id="go" class="primary" data-i18n="go">🔊 Translate &amp; Speak</button>
+      <p id="status" class="status" role="status" aria-live="polite"></p>
+      <div class="result" id="out" hidden>
+        <div class="result-text" id="outText" lang="en"></div>
+        <div class="row">
+          <button type="button" id="speakOut" class="accent" data-i18n="speak">🔊 Speak</button>
+          <button type="button" id="stopOut" class="ghost" data-i18n="stop">⏹ Stop</button>
+          <button type="button" id="copyOut" class="ghost" data-i18n="copy">Copy</button>
+        </div>
+        <button type="button" id="toReply" class="link" data-i18n="toReply">Next: record the reply →</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- REPLY: step 3 -->
+  <section id="view-reply" class="view">
+    <div class="card">
+      <h2><span class="badge">3</span> <span id="replyTitle">Record the reply</span></h2>
+      <p class="hint" id="replyHint"></p>
+      <button type="button" id="rec" class="rec"><span class="recdot"></span><span id="recLabel">Record reply</span></button>
+      <textarea id="reply" rows="4" placeholder="The reply appears here. You can also type, paste, or use the 🎤 key on the iPhone keyboard."></textarea>
+      <div class="row">
+        <button type="button" id="clearReply" class="ghost" data-i18n="clear">Clear</button>
+        <button type="button" id="goReply" class="primary slim" data-i18n="translate">Translate</button>
+      </div>
+      <p id="status2" class="status" role="status" aria-live="polite"></p>
+      <div class="result" id="out2" hidden>
+        <div class="result-text" id="outText2"></div>
+        <div class="row">
+          <button type="button" id="speakOut2" class="accent" data-i18n="speak">🔊 Speak</button>
+          <button type="button" id="stopOut2" class="ghost" data-i18n="stop">⏹ Stop</button>
+          <button type="button" id="copyOut2" class="ghost" data-i18n="copy">Copy</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- HISTORY -->
+  <section id="view-history" class="view">
+    <div class="card">
+      <h2 data-i18n="history">History</h2>
+      <ol id="hist" class="hist"></ol>
+      <button type="button" id="clearHist" class="ghost" data-i18n="clearHist">Clear history</button>
+    </div>
+  </section>
+</main>
+
+<footer class="foot">
+  <div>© 2026 Rafat Kotaki. All rights reserved.</div>
+  <div>InterpretLiveNow · V1.0.0</div>
+  <div id="mode" class="mode"></div>
+</footer>
+
+<nav class="tabs" aria-label="Main">
+  <button type="button" data-tab="translate" class="on"><span>🌐</span><em data-i18n="tabTranslate">Translate</em></button>
+  <button type="button" data-tab="reply"><span>🎙</span><em data-i18n="tabReply">Reply</em></button>
+  <button type="button" data-tab="history"><span>🕘</span><em data-i18n="tabHistory">History</em></button>
+</nav>
+
+<script src="app.js"></script>
 </body>
 </html>
