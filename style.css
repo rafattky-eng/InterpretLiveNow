@@ -85,7 +85,7 @@ textarea:focus{outline:none;border-color:var(--amber)}
 @media (max-width:370px){.tools{gap:5px}.tool{width:38px}.ui-lang button{padding:0 8px}}
 
 
-/* V1.1.0 refinements: clearer touch targets and stronger voice feedback */
+/* V1.1.1 refinements: clearer touch targets and stronger voice feedback */
 .app-head{box-shadow:0 8px 24px rgba(0,0,0,.14)}
 .logo{box-shadow:0 0 18px rgba(60,200,255,.18)}
 .card{box-shadow:0 8px 22px rgba(0,0,0,.12)}

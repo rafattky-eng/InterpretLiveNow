@@ -1,4 +1,4 @@
-# InterpretLiveNow V1.1.0
+# InterpretLiveNow V1.1.1
 Japanese ⇄ English interpreter (iPhone-first PWA). All files are in one folder.
 
 ## Deploy / update GitHub Pages
@@ -16,3 +16,6 @@ Japanese ⇄ English interpreter (iPhone-first PWA). All files are in one folder
 Translation services and online voice endpoints are third-party services and may change availability or usage limits.
 
 © 2026 Rafat Kotaki. All rights reserved.
+
+
+V1.1.1 audio fix: beep uses a short WAV through HTMLAudioElement and reports playback rejection instead of showing a false success. Test audio first in Safari with media volume turned up.

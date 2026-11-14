@@ -287,35 +287,68 @@
     next();
   }
 
-  let actx = null;
-  function beep() {
+  // iPhone-safe beep: use a short WAV played by HTMLAudioElement.
+  // Audio.play() is invoked immediately inside the user's button gesture.
+  let activeBeep = null;
+  function makeBeepUrl() {
+    const sampleRate = 22050;
+    const samples = Math.floor(sampleRate * 0.34);
+    const buffer = new ArrayBuffer(44 + samples * 2);
+    const view = new DataView(buffer);
+    const write = (offset, value) => {
+      for (let i = 0; i < value.length; i++) view.setUint8(offset + i, value.charCodeAt(i));
+    };
+    write(0, "RIFF"); view.setUint32(4, 36 + samples * 2, true);
+    write(8, "WAVE"); write(12, "fmt "); view.setUint32(16, 16, true);
+    view.setUint16(20, 1, true); view.setUint16(22, 1, true);
+    view.setUint32(24, sampleRate, true); view.setUint32(28, sampleRate * 2, true);
+    view.setUint16(32, 2, true); view.setUint16(34, 16, true);
+    write(36, "data"); view.setUint32(40, samples * 2, true);
+    for (let i = 0; i < samples; i++) {
+      const t = i / sampleRate;
+      const fadeIn = Math.min(1, t / 0.015);
+      const fadeOut = Math.min(1, (0.34 - t) / 0.07);
+      const envelope = Math.max(0, Math.min(fadeIn, fadeOut));
+      const sample = Math.sin(2 * Math.PI * 880 * t) * envelope * 0.72;
+      view.setInt16(44 + i * 2, Math.max(-1, Math.min(1, sample)) * 32767, true);
+    }
+    return URL.createObjectURL(new Blob([buffer], { type: "audio/wav" }));
+  }
+  function playBeepFromTap() {
     try {
-      const AudioCtx = window.AudioContext || window.webkitAudioContext;
-      if (!AudioCtx) return false;
-      actx = actx || new AudioCtx();
-      const playTone = () => {
-        const oscillator = actx.createOscillator();
-        const gain = actx.createGain();
-        oscillator.type = "sine";
-        oscillator.frequency.value = 880;
-        gain.gain.setValueAtTime(0.0001, actx.currentTime);
-        gain.gain.exponentialRampToValueAtTime(0.18, actx.currentTime + 0.02);
-        gain.gain.exponentialRampToValueAtTime(0.0001, actx.currentTime + 0.28);
-        oscillator.connect(gain);
-        gain.connect(actx.destination);
-        oscillator.start();
-        oscillator.stop(actx.currentTime + 0.3);
+      if (activeBeep) {
+        try { activeBeep.pause(); } catch {}
+      }
+      const url = makeBeepUrl();
+      const audio = new Audio(url);
+      activeBeep = audio;
+      audio.preload = "auto";
+      audio.volume = 1;
+      audio.playsInline = true;
+      audio.onended = () => {
+        URL.revokeObjectURL(url);
+        if (activeBeep === audio) activeBeep = null;
       };
-      if (actx.state === "suspended") actx.resume().then(playTone).catch(() => {});
-      else playTone();
+      const result = audio.play();
+      if (result && typeof result.then === "function") {
+        result.then(() => {
+          soundMsg("Beep playback started. If it is still silent, check iPhone media volume and audio output.", false);
+        }).catch(error => {
+          URL.revokeObjectURL(url);
+          if (activeBeep === audio) activeBeep = null;
+          soundMsg("iPhone blocked beep playback (" + (error.name || "audio error") + "). Open this page in Safari and tap Beep again.", true);
+        });
+      } else {
+        soundMsg("Beep playback requested. Check iPhone media volume.", false);
+      }
       return true;
-    } catch { return false; }
+    } catch (error) {
+      soundMsg("Could not create beep audio: " + (error.message || "unknown error"), true);
+      return false;
+    }
   }
 
-  $("testBeep").onclick = () => {
-    const ok = beep();
-    soundMsg(ok ? "Beep played. This checks the basic audio output only." : "Audio unavailable in this browser.", !ok);
-  };
+  $("testBeep").onclick = () => { playBeepFromTap(); };
   $("testVoice").onclick = () => {
     const code = LANG[dir[1]].tts;
     speak(dir[1] === "ja" ? "音声テストです。聞こえますか？" : "This is a voice test. Can you hear me?", code);
