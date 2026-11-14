@@ -1,9 +1,9 @@
-# InterpretLiveNow  V1.0.0
+# InterpretLiveNow  V1.0.1
 Japanese ⇄ English live interpreter (iPhone PWA).
 
 ## Deploy (GitHub Pages)
-1. Upload all files (including `.github` and `.nojekyll`) to a new repo, branch `main`.
-2. Settings → Pages → Source: **GitHub Actions**. Push to `main`.
+1. Upload all files (no folders) to a new repo, branch `main`.
+2. Settings → Pages → Source: **Deploy from a branch** → `main` → `/ (root)` → Save.
 3. Open `https://<user>.github.io/<repo>/` in **Safari** on iPhone → Share → **Add to Home Screen**.
 
 ## Notes

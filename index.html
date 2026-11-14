@@ -13,16 +13,16 @@
 <meta name="apple-mobile-web-app-title" content="InterpretLiveNow">
 <meta name="format-detection" content="telephone=no">
 <link rel="manifest" href="manifest.webmanifest">
-<link rel="icon" href="icons/favicon-32.png" sizes="32x32">
-<link rel="apple-touch-icon" href="icons/icon-180.png">
-<link rel="apple-touch-icon" sizes="152x152" href="icons/icon-152.png">
-<link rel="apple-touch-icon" sizes="167x167" href="icons/icon-167.png">
-<link rel="apple-touch-icon" sizes="180x180" href="icons/icon-180.png">
+<link rel="icon" href="favicon-32.png" sizes="32x32">
+<link rel="apple-touch-icon" href="icon-180.png">
+<link rel="apple-touch-icon" sizes="152x152" href="icon-152.png">
+<link rel="apple-touch-icon" sizes="167x167" href="icon-167.png">
+<link rel="apple-touch-icon" sizes="180x180" href="icon-180.png">
 <link rel="stylesheet" href="style.css">
 </head>
 <body>
 <header class="app-head">
-  <img src="icons/icon-192.png" alt="InterpretLiveNow logo" width="44" height="44">
+  <img src="icon-192.png" alt="InterpretLiveNow logo" width="44" height="44">
   <div class="titles">
     <h1>InterpretLiveNow</h1>
     <p id="stepLabel" class="step"></p>
@@ -34,6 +34,7 @@
 </header>
 
 <main>
+  <div class="hero"><img src="logo-480.png" alt="InterpretLiveNow" width="132" height="132"></div>
   <div id="installCard" class="card install" hidden>
     <strong data-i18n="installTitle">Install on iPhone</strong>
     <p data-i18n="installBody">Tap Share, then “Add to Home Screen”.</p>
@@ -49,6 +50,16 @@
         <button type="button" id="swap" class="swap" aria-label="Swap languages">⇄</button>
         <div class="pill to" id="toPill">English</div>
       </div>
+      <div class="row sound">
+        <button type="button" id="testSound" class="ghost" data-i18n="test">🔈 Test sound</button>
+        <select id="rate" aria-label="Speech speed">
+          <option value="0.7" data-i18n="slow">Slow</option>
+          <option value="0.95" data-i18n="normal" selected>Normal</option>
+          <option value="1.2" data-i18n="fast">Fast</option>
+        </select>
+        <label class="switch"><input type="checkbox" id="autoSpeak" checked> <span data-i18n="autoSpeak">Speak automatically</span></label>
+      </div>
+      <p id="soundMsg" class="status" role="status" aria-live="polite"></p>
     </div>
 
     <div class="card">
@@ -108,7 +119,7 @@
 
 <footer class="foot">
   <div>© 2026 Rafat Kotaki. All rights reserved.</div>
-  <div>InterpretLiveNow · V1.0.0</div>
+  <div>InterpretLiveNow · V1.0.1</div>
   <div id="mode" class="mode"></div>
 </footer>
 

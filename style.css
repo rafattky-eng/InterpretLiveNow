@@ -61,3 +61,8 @@ button{font:inherit;cursor:pointer}
 .tabs button.on{color:var(--blue)}
 :focus-visible{outline:3px solid #fff;outline-offset:2px}
 @media (prefers-reduced-motion:reduce){.rec.live .recdot{animation:none}}
+
+.hero{display:flex;justify-content:center;padding:4px 0 0}
+.hero img{border-radius:28px;box-shadow:0 0 28px rgba(60,200,255,.35),0 0 50px rgba(255,194,26,.15)}
+.sound select{background:var(--bg2);color:var(--ink);border:1px solid var(--line);border-radius:12px;padding:10px;font:inherit}
+@media (max-height:700px){.hero img{width:96px;height:96px}}
