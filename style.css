@@ -83,3 +83,28 @@ textarea:focus{outline:none;border-color:var(--amber)}
 :focus-visible{outline:3px solid #fff;outline-offset:2px}
 @media (prefers-reduced-motion:reduce){.rec.live .recdot{animation:none}}
 @media (max-width:370px){.tools{gap:5px}.tool{width:38px}.ui-lang button{padding:0 8px}}
+
+
+/* V1.1.0 refinements: clearer touch targets and stronger voice feedback */
+.app-head{box-shadow:0 8px 24px rgba(0,0,0,.14)}
+.logo{box-shadow:0 0 18px rgba(60,200,255,.18)}
+.card{box-shadow:0 8px 22px rgba(0,0,0,.12)}
+.row button,.row .ghost,.row .accent{min-height:44px}
+.row{row-gap:10px}
+.settings .row{display:grid;grid-template-columns:1fr 1fr;gap:9px}
+.settings .row button{min-height:48px;padding:10px 12px;white-space:normal}
+.settings .row #testVoice{grid-column:1/-1}
+.status{padding:3px 2px;overflow-wrap:anywhere}
+.status:not(:empty){border-left:3px solid var(--blue);padding-left:10px}
+.status.err{border-left-color:var(--red)}
+.result{background:rgba(255,255,255,.025);border-radius:14px;padding:14px;margin-top:14px}
+.result .row button{flex:1}
+.primary{box-shadow:0 5px 0 rgba(0,0,0,.16);min-height:54px}
+.primary:active,.accent:active,.ghost:active{transform:translateY(1px);filter:brightness(1.08)}
+#voiceHelp{margin-top:12px;padding:10px 12px;border-radius:12px;background:rgba(60,200,255,.08);border:1px solid rgba(60,200,255,.28)}
+@media(max-width:390px){
+  body{padding-left:11px;padding-right:11px}
+  .card{padding:14px;border-radius:19px}
+  .result .row{display:grid;grid-template-columns:1fr 1fr}
+  .result .row button{width:100%;padding:10px 8px}
+}

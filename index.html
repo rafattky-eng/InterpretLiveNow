@@ -18,7 +18,7 @@
 <link rel="apple-touch-icon" sizes="152x152" href="icon-152.png">
 <link rel="apple-touch-icon" sizes="167x167" href="icon-167.png">
 <link rel="apple-touch-icon" sizes="180x180" href="icon-180.png">
-<link rel="stylesheet" href="style.css?v=1.0.3">
+<link rel="stylesheet" href="style.css?v=1.1.0">
 </head>
 <body>
 <header class="app-head">
@@ -59,6 +59,7 @@
         <summary data-i18n="settings">🔊 Sound &amp; settings</summary>
         <div class="row">
           <button type="button" id="testVoice" class="accent" data-i18n="testVoice">🔈 Test voice</button>
+          <button type="button" id="testOnline" class="ghost">🌐 Online voice</button>
           <button type="button" id="testBeep" class="ghost" data-i18n="testBeep">🔔 Beep</button>
         </div>
         <label class="field"><span data-i18n="speed">Speed</span>
@@ -70,9 +71,9 @@
         <label class="field"><span data-i18n="voiceEn">English voice</span><select id="voice_en"></select></label>
         <label class="field"><span data-i18n="voiceJa">Japanese voice</span><select id="voice_ja"></select></label>
         <label class="check"><input type="checkbox" id="autoSpeak" checked> <span data-i18n="autoSpeak">Speak automatically</span></label>
-        <label class="check"><input type="checkbox" id="bypass" checked> <span data-i18n="bypass">Play even if the silent switch is on</span></label>
         <label class="field"><span data-i18n="keyLabel">Better translation (optional)</span>
           <input type="password" id="gkey" placeholder="Google Cloud Translation API key" autocomplete="off" autocapitalize="off" spellcheck="false"></label>
+        <p class="hint" id="voiceHelp">On iPhone, tap Speak after each translation. The silent-switch bypass is not guaranteed by Safari.</p>
         <p class="hint" data-i18n="keyHint">Without a key the app uses free services and switches between them automatically.</p>
       </details>
       <p id="soundMsg" class="status" role="status" aria-live="polite"></p>
@@ -93,6 +94,7 @@
         <p class="via" id="via"></p>
         <div class="row">
           <button type="button" id="speakOut" class="accent" data-i18n="speak">🔊 Speak</button>
+          <button type="button" id="onlineOut" class="ghost">🌐 Online voice</button>
           <button type="button" id="stopOut" class="ghost" data-i18n="stop">⏹ Stop</button>
           <button type="button" id="copyOut" class="ghost" data-i18n="copy">Copy</button>
         </div>
@@ -123,6 +125,7 @@
         <p class="via" id="via2"></p>
         <div class="row">
           <button type="button" id="speakOut2" class="accent" data-i18n="speak">🔊 Speak</button>
+          <button type="button" id="onlineOut2" class="ghost">🌐 Online voice</button>
           <button type="button" id="stopOut2" class="ghost" data-i18n="stop">⏹ Stop</button>
           <button type="button" id="copyOut2" class="ghost" data-i18n="copy">Copy</button>
         </div>
@@ -141,7 +144,7 @@
 
 <footer class="foot">
   <div>© 2026 Rafat Kotaki. All rights reserved.</div>
-  <div>InterpretLiveNow · V1.0.3</div>
+  <div>InterpretLiveNow · V1.1.0</div>
 </footer>
 
 <nav class="tabs" aria-label="Main">
@@ -151,6 +154,6 @@
 </nav>
 
 <div id="toast" class="toast" role="status" aria-live="polite"></div>
-<script src="app.js?v=1.0.3"></script>
+<script src="app.js?v=1.1.0"></script>
 </body>
 </html>

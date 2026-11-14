@@ -1,4 +1,4 @@
-const CACHE = "interpretlivenow-v1.0.3";
+const CACHE = "interpretlivenow-v1.1.0";
 const ASSETS = ["./","index.html","style.css","app.js","manifest.webmanifest","icon-180.png","icon-192.png","icon-512.png","maskable-512.png","favicon-32.png"];
 self.addEventListener("install", e => { e.waitUntil(caches.open(CACHE).then(c => c.addAll(ASSETS))); self.skipWaiting(); });
 self.addEventListener("activate", e => {
