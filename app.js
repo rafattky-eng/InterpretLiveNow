@@ -129,24 +129,32 @@
     return out;
   }
 
-  /* ================= Speech output: iPhone-safe, user initiated ================= */
+  /* ================= Speech output: native iPhone / browser voices ================= */
   const synth = window.speechSynthesis || null;
   let voices = [];
   let speechToken = 0;
-  let activeAudio = null;
   let speechWatchdog = null;
 
   const vcode = v => String(v.lang || "").replace("_", "-").toLowerCase();
+
+  function refreshVoices() {
+    if (!synth) return [];
+    try { voices = synth.getVoices() || []; } catch { voices = []; }
+    fillVoices();
+    return voices;
+  }
+
   function pickVoice(code) {
     const base = code.slice(0, 2).toLowerCase();
     const pref = store.get("ilnVoice_" + base, "");
     if (pref) {
       const chosen = voices.find(x => x.voiceURI === pref);
-      if (chosen) return chosen;
+      if (chosen && vcode(chosen).startsWith(base)) return chosen;
     }
     const matching = voices.filter(v => vcode(v).startsWith(base));
     return matching.find(v => vcode(v) === code.toLowerCase()) || matching[0] || null;
   }
+
   function fillVoices() {
     ["en", "ja"].forEach(l => {
       const sel = $("voice_" + l);
@@ -160,74 +168,77 @@
       if (sel.value !== cur) sel.value = "";
       sel.onchange = () => store.set("ilnVoice_" + l, sel.value);
     });
-  }
-  function loadVoices() {
-    if (!synth) return;
-    voices = synth.getVoices() || [];
-    fillVoices();
-  }
-  if (synth) {
-    loadVoices();
-    synth.addEventListener?.("voiceschanged", loadVoices);
-    synth.onvoiceschanged = loadVoices;
+
+    const help = $("voiceHelp");
+    if (help) {
+      help.textContent = !synth
+        ? "Device speech is unavailable in this browser. Open InterpretLiveNow in Safari."
+        : voices.length
+          ? "Device voices are ready. Choose an English and a Japanese voice above. Your choices are saved on this iPhone."
+          : "Waiting for iPhone voices. If none appear, check Settings → Accessibility → Spoken Content → Voices.";
+    }
   }
 
-  // Do not play a silent looping audio element here. It can interfere with iPhone
-  // speech synthesis / recognition audio sessions and does not reliably bypass mute.
+  if (synth) {
+    refreshVoices();
+    if (typeof synth.addEventListener === "function") synth.addEventListener("voiceschanged", refreshVoices);
+    else synth.onvoiceschanged = refreshVoices;
+  }
+
   function unlockSpeechFromGesture() {
     try { if (synth && synth.paused) synth.resume(); } catch {}
   }
+
   function stopSpeech() {
     speechToken++;
     clearTimeout(speechWatchdog);
     try { if (synth) synth.cancel(); } catch {}
-    if (activeAudio) {
-      activeAudio.onended = null;
-      activeAudio.onerror = null;
-      try { activeAudio.pause(); activeAudio.removeAttribute("src"); activeAudio.load(); } catch {}
-      activeAudio = null;
-    }
     soundMsg("Speech stopped.");
   }
+
   function splitSpeech(text, max = 220) {
     const parts = chunk(text, max);
     return parts.length ? parts : [text];
   }
-  function speak(text, code) {
+
+  function speak(text, code, onFinish) {
     const clean = String(text || "").trim();
     if (!clean) {
       soundMsg("Nothing to speak yet. Translate some text first.", true);
       return;
     }
-    if (!synth) {
-      soundMsg("Speech synthesis is not available in this browser. Try Online voice.", true);
+    if (!synth || typeof window.SpeechSynthesisUtterance !== "function") {
+      soundMsg("Device speech is not available here. Open this app in Safari on your iPhone.", true);
       return;
     }
-    unlockSpeechFromGesture();
+
+    refreshVoices();
     const my = ++speechToken;
     clearTimeout(speechWatchdog);
-    if (activeAudio) { try { activeAudio.pause(); } catch {} activeAudio = null; }
     const parts = splitSpeech(clean);
     const voice = pickVoice(code);
-    let index = 0, started = false, finished = false;
+    let index = 0;
+    let didStart = false;
 
     function next() {
-      if (my !== speechToken || index >= parts.length) {
-        if (my === speechToken && !finished) {
-          finished = true;
-          soundMsg("Speech finished.");
-        }
+      if (my !== speechToken) return;
+      if (index >= parts.length) {
+        clearTimeout(speechWatchdog);
+        soundMsg("Speech finished.");
+        if (typeof onFinish === "function") onFinish();
         return;
       }
+
       const utterance = new SpeechSynthesisUtterance(parts[index++]);
       utterance.lang = code;
       if (voice) utterance.voice = voice;
       utterance.rate = Math.max(0.65, Math.min(1.25, parseFloat($("rate").value) || 0.95));
       utterance.pitch = 1;
       utterance.volume = 1;
+
       utterance.onstart = () => {
         if (my !== speechToken) return;
-        started = true;
+        didStart = true;
         clearTimeout(speechWatchdog);
         soundMsg("Speaking " + (voice ? voice.name : code) + "…");
       };
@@ -237,53 +248,25 @@
       utterance.onerror = e => {
         if (my !== speechToken || /canceled|interrupted/i.test(e.error || "")) return;
         clearTimeout(speechWatchdog);
-        soundMsg("iPhone speech error: " + (e.error || "unknown") + ". Try Online voice or check iPhone volume.", true);
+        soundMsg("Device voice error: " + (e.error || "unknown") + ". Check iPhone volume and the selected voice.", true);
       };
-      try { synth.speak(utterance); }
-      catch (e) { soundMsg("Could not start speech: " + e.message, true); }
-    }
-    // Speak is started directly from the user's button tap. Do not queue every
-    // chunk at once and do not call cancel() immediately before speak() on iOS.
-    next();
-    speechWatchdog = setTimeout(() => {
-      if (my === speechToken && !started) {
-        try { synth.cancel(); } catch {}
-        soundMsg("The iPhone did not start its voice. Tap Online voice or check Settings → Accessibility → Spoken Content.", true);
-      }
-    }, 2800);
-  }
 
-  function playOnline(text, code) {
-    const clean = String(text || "").trim();
-    if (!clean) { soundMsg("Nothing to play yet.", true); return; }
-    const my = ++speechToken;
-    try { if (synth) synth.cancel(); } catch {}
-    const parts = splitSpeech(clean, 150);
-    let i = 0;
-    const audio = new Audio();
-    audio.setAttribute("playsinline", "");
-    audio.preload = "none";
-    activeAudio = audio;
-    const next = () => {
-      if (my !== speechToken || i >= parts.length) {
-        if (my === speechToken) soundMsg("Online voice finished.");
-        activeAudio = null;
+      try {
+        if (synth.paused) synth.resume();
+        synth.speak(utterance);
+      } catch (e) {
+        clearTimeout(speechWatchdog);
+        soundMsg("Could not start device voice: " + (e.message || "unknown error"), true);
         return;
       }
-      const q = parts[i++];
-      audio.src = "https://translate.google.com/translate_tts?ie=UTF-8&client=tw-ob&tl=" +
-        encodeURIComponent(code.slice(0, 2)) + "&q=" + encodeURIComponent(q);
-      audio.onended = next;
-      audio.onerror = () => {
-        if (my === speechToken) soundMsg("Online voice could not load. Check your connection and try Test voice again.", true);
-      };
-      soundMsg("Loading online voice…");
-      audio.play().then(() => {
-        if (my === speechToken) soundMsg("Playing online voice…");
-      }).catch(e => {
-        if (my === speechToken) soundMsg("Online playback blocked (" + (e.name || "error") + "). Tap again or use device speech.", true);
-      });
-    };
+
+      speechWatchdog = setTimeout(() => {
+        if (my === speechToken && !didStart) {
+          soundMsg("The iPhone voice did not start. Open Settings → Accessibility → Spoken Content → Voices and download an English or Japanese voice, then try again.", true);
+        }
+      }, 8000);
+    }
+
     next();
   }
 
@@ -353,9 +336,10 @@
     const code = LANG[dir[1]].tts;
     speak(dir[1] === "ja" ? "音声テストです。聞こえますか？" : "This is a voice test. Can you hear me?", code);
   };
-  $("testOnline").onclick = () => {
-    const code = LANG[dir[1]].tts;
-    playOnline(dir[1] === "ja" ? "オンライン音声テストです。" : "This is an online voice test.", code);
+  $("testBoth").onclick = () => {
+    speak("音声テストです。聞こえますか？", "ja-JP", () => {
+      speak("This is the English voice test. Can you hear me?", "en-US");
+    });
   };
   $("rate").value = store.get("ilnRate", "0.95");
   $("rate").onchange = e => store.set("ilnRate", e.target.value);
@@ -430,7 +414,6 @@
     if (!lastOut) { setStatus("status", "Translate text first, then tap Speak.", true); return; }
     speak(lastOut, LANG[dir[1]].tts);
   };
-  $("onlineOut").onclick = () => playOnline(lastOut, LANG[dir[1]].tts);
   $("stopOut").onclick = stopSpeech;
   $("copyOut").onclick = () => navigator.clipboard && navigator.clipboard.writeText(lastOut).then(() => toast("Copied")).catch(() => {});
 
@@ -492,7 +475,6 @@
     if (!lastOut2) { setStatus("status2", "Translate the reply first, then tap Speak.", true); return; }
     speak(lastOut2, LANG[dir[0]].tts);
   };
-  $("onlineOut2").onclick = () => playOnline(lastOut2, LANG[dir[0]].tts);
   $("stopOut2").onclick = stopSpeech;
   $("copyOut2").onclick = () => navigator.clipboard && navigator.clipboard.writeText(lastOut2).then(() => toast("Copied")).catch(() => {});
 
