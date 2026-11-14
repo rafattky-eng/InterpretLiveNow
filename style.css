@@ -108,3 +108,12 @@ textarea:focus{outline:none;border-color:var(--amber)}
   .result .row{display:grid;grid-template-columns:1fr 1fr}
   .result .row button{width:100%;padding:10px 8px}
 }
+
+/* V1.2.2: audio diagnostic */
+.hint.warn{color:#ffd37a;border-left:3px solid var(--amber);padding-left:10px}
+.diag{margin-top:14px;border-top:1px dashed var(--line);padding-top:12px}
+.diag h3{margin:0 0 6px;font-size:1rem}
+.dstep{display:flex;gap:8px;align-items:center;margin:8px 0}
+.dstep .ghost{flex:1;min-height:46px;text-align:left}
+.yn{width:48px;height:46px;border-radius:14px;border:1px solid var(--line);background:var(--bg2);font-size:1.2rem;padding:0}
+.yn:active{background:var(--card)}

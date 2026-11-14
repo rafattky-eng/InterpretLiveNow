@@ -26,8 +26,8 @@
       translate: "Translate", clearHist: "Clear history", tabTranslate: "Translate", tabReply: "Reply", tabHistory: "History",
       installTitle: "Install on iPhone", installBody: "In Safari tap Share ⎋, then “Add to Home Screen”, then Add.", gotIt: "Got it",
       settings: "🔊 Sound & settings", testVoice: "🔈 Test voice", testBeep: "🔔 Beep", speed: "Speed", slow: "Slow", normal: "Normal", fast: "Fast",
-      voiceEn: "English voice", voiceJa: "Japanese voice", auto: "Automatic", autoSpeak: "Auto-speak on desktop (tap Speak on iPhone)",
-      bypass: "Audio output", keyLabel: "Better translation (optional)",
+      voiceEn: "English voice", voiceJa: "Japanese voice", auto: "Automatic", autoSpeak: "Speak automatically after translating",
+      bypass: "Play over the mute switch (experimental)", muteTip: "🔕 If you hear nothing, check if your iPhone’s physical mute switch (left side) is ON.", diagTitle: "🩺 Audio diagnostic", diagHint: "Run the steps in order. After each one tap ✅ if you heard it, ❌ if not.", keyLabel: "Better translation (optional)",
       keyHint: "Without a key the app uses free services and switches between them automatically.",
       replyTitle: "Record the reply", recLabel: "Record reply", dictLabel: "🎤 Dictate reply", recStop: "Listening… tap to stop",
       dictTitle: "🎤 Use the keyboard microphone",
@@ -44,8 +44,8 @@
       translate: "翻訳", clearHist: "履歴を消去", tabTranslate: "翻訳", tabReply: "返答", tabHistory: "履歴",
       installTitle: "iPhoneにインストール", installBody: "Safariで共有 ⎋ をタップし、「ホーム画面に追加」を選んでください。", gotIt: "OK",
       settings: "🔊 音声と設定", testVoice: "🔈 音声テスト", testBeep: "🔔 ビープ音", speed: "速度", slow: "ゆっくり", normal: "標準", fast: "速い",
-      voiceEn: "英語の音声", voiceJa: "日本語の音声", auto: "自動", autoSpeak: "デスクトップで自動読み上げ（iPhoneでは「読み上げ」をタップ）",
-      bypass: "音声出力", keyLabel: "高品質翻訳（任意）",
+      voiceEn: "英語の音声", voiceJa: "日本語の音声", auto: "自動", autoSpeak: "翻訳後に自動で読み上げ",
+      bypass: "消音スイッチでも再生（試験的）", muteTip: "🔕 音が出ない場合は、iPhone本体（左側）の消音スイッチがオンになっていないか確認してください。", diagTitle: "🩺 音声診断", diagHint: "順番に実行し、聞こえたら✅、聞こえなければ❌をタップしてください。", keyLabel: "高品質翻訳（任意）",
       keyHint: "キーなしでも無料サービスを自動で切り替えて翻訳します。",
       replyTitle: "返答を録音", recLabel: "返答を録音", dictLabel: "🎤 返答を音声入力", recStop: "聞き取り中… タップで停止",
       dictTitle: "🎤 キーボードのマイクを使う",
@@ -71,7 +71,7 @@
   const setStatus = (id, msg, err) => { const el = $(id); el.textContent = msg || ""; el.classList.toggle("err", !!err); };
   const soundMsg = (m, err) => setStatus("soundMsg", m, err);
   let toastT;
-  function toast(m) { const t = $("toast"); t.textContent = m; t.classList.add("on"); clearTimeout(toastT); toastT = setTimeout(() => t.classList.remove("on"), 2400); }
+  function toast(m, ms) { const t = $("toast"); t.textContent = m; t.classList.add("on"); clearTimeout(toastT); toastT = setTimeout(() => t.classList.remove("on"), ms || 2400); }
 
   const standalone = window.navigator.standalone === true || (window.matchMedia && matchMedia("(display-mode: standalone)").matches);
   const isIOS = /iphone|ipad|ipod/i.test(navigator.userAgent) || (navigator.platform === "MacIntel" && navigator.maxTouchPoints > 1);
@@ -142,9 +142,9 @@
     return out;
   }
 
-  /* ================= Speech output: native iPhone / browser voices ================= */
+  /* ================= Speech output: native iPhone / browser cachedVoices ================= */
   const synth = window.speechSynthesis || null;
-  let voices = [];
+  let cachedVoices = [];
   let speechToken = 0;
   let speechWatchdog = null;
 
@@ -152,20 +152,19 @@
 
   function refreshVoices() {
     if (!synth) return [];
-    try { voices = synth.getVoices() || []; } catch { voices = []; }
+    try { cachedVoices = synth.getVoices() || []; } catch { cachedVoices = []; }
     fillVoices();
-    return voices;
+    return cachedVoices;
   }
 
-  function pickVoice(code) {
+  // Only an explicitly chosen voice is set on the utterance. With "Automatic" we set utterance.lang
+  // and let iOS pick its default voice (never assign voice = null).
+  function explicitVoice(code) {
     const base = code.slice(0, 2).toLowerCase();
     const pref = store.get("ilnVoice_" + base, "");
-    if (pref) {
-      const chosen = voices.find(x => x.voiceURI === pref);
-      if (chosen && vcode(chosen).startsWith(base)) return chosen;
-    }
-    const matching = voices.filter(v => vcode(v).startsWith(base));
-    return matching.find(v => vcode(v) === code.toLowerCase()) || matching[0] || null;
+    if (!pref) return null;
+    const chosen = cachedVoices.find(x => x.voiceURI === pref);
+    return chosen && vcode(chosen).startsWith(base) ? chosen : null;
   }
 
   function fillVoices() {
@@ -175,7 +174,7 @@
       const cur = store.get("ilnVoice_" + l, "");
       sel.innerHTML = "";
       sel.add(new Option(I18N[ui].auto, ""));
-      voices.filter(v => vcode(v).startsWith(l)).forEach(v =>
+      cachedVoices.filter(v => vcode(v).startsWith(l)).forEach(v =>
         sel.add(new Option(v.name + " (" + v.lang + ")", v.voiceURI)));
       sel.value = cur;
       if (sel.value !== cur) sel.value = "";
@@ -186,7 +185,7 @@
     if (help) {
       help.textContent = !synth
         ? "Device speech is unavailable in this browser. Open InterpretLiveNow in Safari."
-        : voices.length
+        : cachedVoices.length
           ? "Device voices are ready. Choose an English and a Japanese voice above. Your choices are saved on this iPhone."
           : "Waiting for iPhone voices. If none appear, check Settings → Accessibility → Spoken Content → Voices.";
     }
@@ -198,15 +197,43 @@
     else synth.onvoiceschanged = refreshVoices;
   }
 
+  let primed = false, lastCancelAt = 0, diagEv = null;
+  let speechLog = { started: false, ended: false, error: "" };
+
   function unlockSpeechFromGesture() {
     try { if (synth && synth.paused) synth.resume(); } catch {}
   }
+  // Call only from a tap: lets iOS accept later, automatic speech after the translation arrives.
+  function primeSpeech() {
+    if (primed || !synth || typeof window.SpeechSynthesisUtterance !== "function") return;
+    primed = true;
+    try { const u = new SpeechSynthesisUtterance(" "); u.volume = 0; synth.speak(u); } catch {}
+  }
 
-  function stopSpeech() {
+  // Optional mute-switch workaround: a silent looping <audio> moves iOS to the "playback" audio session.
+  function makeSilentUrl() {
+    const n = 8000, b = new ArrayBuffer(44 + n), d = new DataView(b);
+    const w = (o, t) => [...t].forEach((c, i) => d.setUint8(o + i, c.charCodeAt(0)));
+    w(0, "RIFF"); d.setUint32(4, 36 + n, true); w(8, "WAVEfmt "); d.setUint32(16, 16, true); d.setUint16(20, 1, true);
+    d.setUint16(22, 1, true); d.setUint32(24, 8000, true); d.setUint32(28, 8000, true); d.setUint16(32, 1, true); d.setUint16(34, 8, true);
+    w(36, "data"); d.setUint32(40, n, true); for (let i = 0; i < n; i++) d.setUint8(44 + i, 128);
+    return URL.createObjectURL(new Blob([b], { type: "audio/wav" }));
+  }
+  let bypassAudio = null;
+  function bypassOn() {
+    try {
+      if (!bypassAudio) { bypassAudio = new Audio(makeSilentUrl()); bypassAudio.loop = true; bypassAudio.setAttribute("playsinline", ""); bypassAudio.volume = 0.01; }
+      if (bypassAudio.paused) bypassAudio.play().catch(() => {});
+    } catch {}
+  }
+  function bypassOff() { try { if (bypassAudio) bypassAudio.pause(); } catch {} }
+
+  // iOS bug: speak() right after cancel() can be dropped. Cancel only when something is queued, then wait >=150 ms.
+  function stopSpeech(quiet) {
     speechToken++;
     clearTimeout(speechWatchdog);
-    try { if (synth) synth.cancel(); } catch {}
-    soundMsg("Speech stopped.");
+    try { if (synth && (synth.speaking || synth.pending)) { synth.cancel(); lastCancelAt = Date.now(); } } catch {}
+    if (!quiet) soundMsg("Speech stopped.");
   }
 
   function splitSpeech(text, max = 220) {
@@ -214,75 +241,68 @@
     return parts.length ? parts : [text];
   }
 
-  function speak(text, code, onFinish) {
-    soundMsg("Preparing " + (String(code || "").startsWith("ja") ? "Japanese" : "English") + " voice…", false);
-    unlockSpeechFromGesture();
+  // Runs synchronously inside the tap when nothing needs cancelling (no await, no timers, no voice refresh).
+  function speak(text, code, onFinish, opts) {
+    opts = opts || {};
+    const isJa = String(code || "").startsWith("ja");
     const clean = String(text || "").trim();
-    if (!clean) {
-      soundMsg("Nothing to speak yet. Translate some text first.", true);
-      return;
-    }
+    if (!clean) { soundMsg("Nothing to speak yet. Translate some text first.", true); return; }
     if (!synth || typeof window.SpeechSynthesisUtterance !== "function") {
-      soundMsg("Device speech is not available here. Open this app in Safari on your iPhone.", true);
-      return;
+      soundMsg("Device speech is not available here. Open this app in Safari on your iPhone.", true); return;
     }
+    unlockSpeechFromGesture();
+    (opts.bypass !== undefined ? opts.bypass : $("bypass").checked) ? bypassOn() : bypassOff();
+    soundMsg("Preparing " + (isJa ? "Japanese" : "English") + " voice…", false);
 
-    refreshVoices();
     const my = ++speechToken;
     clearTimeout(speechWatchdog);
+    speechLog = { started: false, ended: false, error: "" };
     const parts = splitSpeech(clean);
-    const voice = pickVoice(code);
+    const voice = explicitVoice(code);          // null = let the system choose from utterance.lang
     let index = 0;
-    let didStart = false;
 
     function next() {
       if (my !== speechToken) return;
       if (index >= parts.length) {
         clearTimeout(speechWatchdog);
+        speechLog.ended = true;
         soundMsg("Speech finished.");
         if (typeof onFinish === "function") onFinish();
         return;
       }
-
       const utterance = new SpeechSynthesisUtterance(parts[index++]);
       utterance.lang = code;
       if (voice) utterance.voice = voice;
       utterance.rate = Math.max(0.65, Math.min(1.25, parseFloat($("rate").value) || 0.95));
-      utterance.pitch = 1;
-      utterance.volume = 1;
-
+      utterance.pitch = 1; utterance.volume = 1;
       utterance.onstart = () => {
         if (my !== speechToken) return;
-        didStart = true;
-        clearTimeout(speechWatchdog);
-        soundMsg("Speaking " + (voice ? voice.name : code) + "…");
+        speechLog.started = true; clearTimeout(speechWatchdog);
+        soundMsg("Speaking " + (voice ? voice.name : code + " (system voice)") + "…");
       };
-      utterance.onend = () => {
-        if (my === speechToken) next();
-      };
+      utterance.onend = () => { if (my === speechToken) next(); };
       utterance.onerror = e => {
         if (my !== speechToken || /canceled|interrupted/i.test(e.error || "")) return;
-        clearTimeout(speechWatchdog);
-        soundMsg("Device voice error: " + (e.error || "unknown") + ". Check iPhone volume and the selected voice.", true);
+        clearTimeout(speechWatchdog); speechLog.error = e.error || "unknown";
+        soundMsg("Device voice error: " + speechLog.error + ". Check iPhone volume and the selected voice.", true);
       };
-
-      try {
-        if (synth.paused) synth.resume();
-        synth.speak(utterance);
-      } catch (e) {
-        clearTimeout(speechWatchdog);
-        soundMsg("Could not start device voice: " + (e.message || "unknown error"), true);
-        return;
-      }
-
+      try { if (synth.paused) synth.resume(); synth.speak(utterance); }
+      catch (e) { clearTimeout(speechWatchdog); soundMsg("Could not start device voice: " + (e.message || "unknown error"), true); return; }
       speechWatchdog = setTimeout(() => {
-        if (my === speechToken && !didStart) {
-          soundMsg("The iPhone voice did not start. Open Settings → Accessibility → Spoken Content → Voices and download an English or Japanese voice, then try again.", true);
+        if (my === speechToken && !speechLog.started) {
+          soundMsg(opts.auto
+            ? "iPhone needs a tap to speak. Tap 🔊 Speak."
+            : "The iPhone speech engine did not start. Download a voice in Settings → Accessibility → Spoken Content → Voices, then reopen Safari.", true);
         }
-      }, 8000);
+      }, opts.auto ? 2500 : 6000);
     }
 
-    next();
+    let queued = false;
+    try { queued = !!(synth.speaking || synth.pending); } catch {}
+    if (queued) { try { synth.cancel(); lastCancelAt = Date.now(); } catch {} }
+    const wait = Math.max(0, 150 - (Date.now() - lastCancelAt));
+    if (wait > 0) setTimeout(() => { if (my === speechToken) next(); }, wait);
+    else next();
   }
 
   // iPhone-safe beep: use a short WAV played by HTMLAudioElement.
@@ -346,24 +366,58 @@
     }
   }
 
+  const MUTE_TIP = "If you hear nothing, check if your iPhone's physical mute switch is ON.";
+  const testPhrase = code => code.startsWith("ja") ? "音声テストです。聞こえますか？" : "This is a voice test. Can you hear me?";
   $("testBeep").onclick = () => { playBeepFromTap(); };
   $("testVoice").onclick = () => {
-    soundMsg("Test Voice button received. Starting speech…", false);
-    unlockSpeechFromGesture();
+    toast("🔕 " + MUTE_TIP, 6000);
     const code = LANG[dir[1]].tts;
-    speak(dir[1] === "ja" ? "音声テストです。聞こえますか？" : "This is a voice test. Can you hear me?", code);
+    speak(testPhrase(code), code);                 // direct call inside the tap
   };
   $("testBoth").onclick = () => {
-    soundMsg("Starting Japanese + English voice test…", false);
-    unlockSpeechFromGesture();
-    speak("音声テストです。聞こえますか？", "ja-JP", () => {
-      speak("This is the English voice test. Can you hear me?", "en-US");
-    });
+    toast("🔕 " + MUTE_TIP, 6000);
+    speak(testPhrase("ja-JP"), "ja-JP", () => speak(testPhrase("en-US"), "en-US"));
   };
   $("rate").value = store.get("ilnRate", "0.95");
   $("rate").onchange = e => store.set("ilnRate", e.target.value);
-  $("autoSpeak").checked = store.get("ilnAutoSpeak", false);
+  $("autoSpeak").checked = store.get("ilnAutoSpeak", true);
   $("autoSpeak").onchange = e => store.set("ilnAutoSpeak", e.target.checked);
+  $("bypass").checked = store.get("ilnBypass", false);
+  $("bypass").onchange = e => { store.set("ilnBypass", e.target.checked); if (!e.target.checked) bypassOff(); };
+
+  /* ----- Audio diagnostic: beep vs. speech vs. speech + mute-switch workaround ----- */
+  const diag = {};
+  const evText = ev => "Speech engine: " + (ev.started ? "started ✓" : "did not start ✗") + " · " + (ev.ended ? "finished ✓" : "not finished") + (ev.error ? " · error: " + ev.error : "");
+  function diagConclude() {
+    const { beep, voice, bypass } = diag; let msg = "";
+    if (beep === false) msg = "No sound at all. Raise the media volume, disconnect Bluetooth, and end any call, then repeat step 1.";
+    else if (voice === true) msg = "✅ Voice works. If a translation stays silent, tap 🔊 Speak after it appears.";
+    else if (voice === false && bypass === true) {
+      msg = "✅ The mute switch was silencing speech. “Play over the mute switch” is now ON. You can also slide the switch off.";
+      $("bypass").checked = true; store.set("ilnBypass", true);
+    } else if (voice === false && bypass === false) {
+      const ev = diagEv || speechLog;
+      msg = ev.started
+        ? "The engine says it is speaking but you hear nothing. Check Silent/Focus mode, Bluetooth output and volume, or pick another voice above."
+        : "The iPhone speech engine did not start. Download a voice (Settings → Accessibility → Spoken Content → Voices), then close and reopen Safari or restart the phone.";
+    } else if (voice === false) msg = "Now run step 3.";
+    else if (beep === true) msg = "Beep works. Now run step 2.";
+    setStatus("diagResult", msg, voice === false && bypass === false);
+  }
+  document.querySelectorAll(".yn").forEach(b => b.onclick = () => {
+    diag[b.dataset.d] = b.dataset.v === "1";
+    if (b.dataset.d === "voice") diagEv = Object.assign({}, speechLog);
+    diagConclude();
+  });
+  $("dBeep").onclick = () => { playBeepFromTap(); };
+  function diagVoice(bypass) {
+    toast("🔕 " + MUTE_TIP, 6000);
+    const code = LANG[dir[1]].tts;
+    speak(testPhrase(code), code, null, { bypass });
+    setTimeout(() => { $("diagEvents").textContent = evText(speechLog); }, 3500);
+  }
+  $("dVoice").onclick = () => diagVoice(false);
+  $("dBypass").onclick = () => diagVoice(true);
   $("gkey").value = store.get("ilnKey", "");
   $("gkey").onchange = e => store.set("ilnKey", e.target.value.trim());
 
@@ -410,12 +464,12 @@
       lastOut = out; lastDone = text;
       $("outText").textContent = out; $("via").textContent = "via " + lastEngine; $("out").hidden = false; setStatus("status", "");
       pushHist(text, out, dir[0] + "→" + dir[1]);
-      if ($("autoSpeak").checked && !isIOS) speak(out, LANG[dir[1]].tts);
-    else soundMsg("Translation ready. Tap Speak to hear it.", false);
+      if ($("autoSpeak").checked) speak(out, LANG[dir[1]].tts, null, { auto: true });
+      else soundMsg("Translation ready. Tap Speak to hear it.", false);
     } catch (e) { setStatus("status", errMsg(e), true); }
     busy = false; $("go").disabled = false;
   }
-  $("go").onclick = () => { unlockSpeechFromGesture(); runMain(); };
+  $("go").onclick = () => { unlockSpeechFromGesture(); primeSpeech(); runMain(); };
   $("clearSrc").onclick = () => { $("src").value = ""; hide("out"); lastDone = ""; setStatus("status", ""); stopSpeech(); };
   $("paste").onclick = async () => {
     try { const t = await navigator.clipboard.readText(); if (t) { $("src").value = t; $("src").focus(); } }
@@ -475,12 +529,12 @@
       lastOut2 = out; lastDone2 = text;
       $("outText2").textContent = out; $("via2").textContent = "via " + lastEngine; $("out2").hidden = false; setStatus("status2", "");
       pushHist(text, out, dir[1] + "→" + dir[0]);
-      if ($("autoSpeak").checked && !isIOS) speak(out, LANG[dir[0]].tts);
+      if ($("autoSpeak").checked) speak(out, LANG[dir[0]].tts, null, { auto: true });
       else soundMsg("Reply translated. Tap Speak to hear it.", false);
     } catch (e) { setStatus("status2", errMsg(e), true); }
     $("goReply").disabled = false;
   }
-  $("goReply").onclick = () => { unlockSpeechFromGesture(); runReply(); };
+  $("goReply").onclick = () => { unlockSpeechFromGesture(); primeSpeech(); runReply(); };
   let timer2;
   $("reply").addEventListener("input", () => {
     if (!$("autoReply").checked) return;
@@ -543,5 +597,5 @@
   $("installClose").onclick = () => { $("installCard").hidden = true; store.set("ilnInstallSeen", true); };
   if ("serviceWorker" in navigator) navigator.serviceWorker.register("sw.js").catch(() => {});
   applyUI();
-  soundMsg("App ready. Tap Test Voice to check audio.", false);
+  soundMsg("App ready. Open 🔊 Sound & settings → Test voice.", false);
 })();

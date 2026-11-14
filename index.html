@@ -18,7 +18,7 @@
 <link rel="apple-touch-icon" sizes="152x152" href="icon-152.png">
 <link rel="apple-touch-icon" sizes="167x167" href="icon-167.png">
 <link rel="apple-touch-icon" sizes="180x180" href="icon-180.png">
-<link rel="stylesheet" href="style.css?v=1.2.1">
+<link rel="stylesheet" href="style.css?v=1.2.2">
 </head>
 <body>
 <header class="app-head">
@@ -70,10 +70,21 @@
           </select></label>
         <label class="field"><span data-i18n="voiceEn">English voice</span><select id="voice_en"></select></label>
         <label class="field"><span data-i18n="voiceJa">Japanese voice</span><select id="voice_ja"></select></label>
-        <label class="check"><input type="checkbox" id="autoSpeak" checked> <span data-i18n="autoSpeak">Speak automatically</span></label>
+        <label class="check"><input type="checkbox" id="autoSpeak" checked> <span data-i18n="autoSpeak">Speak automatically after translating</span></label>
+        <label class="check"><input type="checkbox" id="bypass"> <span data-i18n="bypass">Play over the mute switch (experimental)</span></label>
+        <p class="hint warn" data-i18n="muteTip">🔕 If you hear nothing, check if your iPhone’s physical mute switch (left side) is ON.</p>
+        <div class="diag">
+          <h3 data-i18n="diagTitle">🩺 Audio diagnostic</h3>
+          <p class="hint" data-i18n="diagHint">Run the steps in order. After each one tap ✅ if you heard it, ❌ if not.</p>
+          <div class="dstep"><button type="button" id="dBeep" class="ghost">1 · Beep</button><button type="button" class="yn" data-d="beep" data-v="1" aria-label="Heard it">✅</button><button type="button" class="yn" data-d="beep" data-v="0" aria-label="Did not hear it">❌</button></div>
+          <div class="dstep"><button type="button" id="dVoice" class="ghost">2 · Voice</button><button type="button" class="yn" data-d="voice" data-v="1" aria-label="Heard it">✅</button><button type="button" class="yn" data-d="voice" data-v="0" aria-label="Did not hear it">❌</button></div>
+          <div class="dstep"><button type="button" id="dBypass" class="ghost">3 · Voice + mute workaround</button><button type="button" class="yn" data-d="bypass" data-v="1" aria-label="Heard it">✅</button><button type="button" class="yn" data-d="bypass" data-v="0" aria-label="Did not hear it">❌</button></div>
+          <p id="diagEvents" class="hint"></p>
+          <p id="diagResult" class="status" role="status" aria-live="polite"></p>
+        </div>
         <label class="field"><span data-i18n="keyLabel">Better translation (optional)</span>
           <input type="password" id="gkey" placeholder="Google Cloud Translation API key" autocomplete="off" autocapitalize="off" spellcheck="false"></label>
-        <p class="hint" id="voiceHelp">On iPhone, tap Speak after each translation. The silent-switch bypass is not guaranteed by Safari.</p>
+        <p class="hint" id="voiceHelp"></p>
         <p class="hint" data-i18n="keyHint">Without a key the app uses free services and switches between them automatically.</p>
       </details>
       <p id="soundMsg" class="status" role="status" aria-live="polite"></p>
@@ -144,7 +155,7 @@
 
 <footer class="foot">
   <div>© 2026 Rafat Kotaki. All rights reserved.</div>
-  <div>InterpretLiveNow · V1.2.1</div>
+  <div>InterpretLiveNow · V1.2.2</div>
 </footer>
 
 <nav class="tabs" aria-label="Main">
@@ -154,6 +165,6 @@
 </nav>
 
 <div id="toast" class="toast" role="status" aria-live="polite"></div>
-<script src="app.js?v=1.2.1"></script>
+<script src="app.js?v=1.2.2"></script>
 </body>
 </html>
