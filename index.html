@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, maximum-scale=1">
 <title>InterpretLiveNow</title>
 <meta name="description" content="AI Conversation Assistant · Personal Interpreter · Break language barriers instantly">
-<meta name="theme-color" content="#0D6EFD">
+<meta name="theme-color" content="#0B1A2E">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="InterpretLiveNow">
@@ -17,22 +17,22 @@
 <link rel="apple-touch-icon" sizes="167x167" href="icon-167.png">
 <link rel="apple-touch-icon" sizes="180x180" href="icon-180.png">
 <style>
-/* ========== DESIGN SYSTEM ========== */
+/* ========== FINDJOB-NOW INSPIRED DARK THEME ========== */
 :root {
-  --primary: #0D6EFD;
+  --navy: #0B1A2E;
+  --navy2: #12253F;
+  --navy3: #1A3150;
+  --gold: #D4B36A;
+  --gold2: #E8C97A;
+  --ink: #F3EFE6;
+  --mute: #8B9BB0;
+  --line: rgba(212,179,106,0.18);
+  --card: rgba(18,37,63,0.92);
   --success: #00C896;
-  --warning: #FFC107;
-  --danger: #FF4D4F;
-  --purple: #7C5CFC;
-  --dark: #071B35;
-  --bg: #F7F9FC;
-  --card: #FFFFFF;
-  --ink: #0E1218;
-  --mute: #5A6A7A;
-  --line: #E4E9F0;
-  --glass: rgba(255,255,255,0.72);
-  --shadow: 0 10px 40px rgba(0,0,0,0.08);
-  --radius: 24px;
+  --danger: #FF5A5F;
+  --primary: #D4B36A;
+  --blue: #3B82F6;
+  --radius: 20px;
   --safe-top: env(safe-area-inset-top, 0px);
   --safe-bottom: env(safe-area-inset-bottom, 0px);
 }
@@ -41,22 +41,21 @@
 html, body { height: 100%; }
 body {
   font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", Roboto, "Helvetica Neue", sans-serif;
-  background: var(--bg);
+  background: #07090D;
   color: var(--ink);
   overflow-x: hidden;
   line-height: 1.45;
   -webkit-font-smoothing: antialiased;
 }
 
-/* ========== LAYOUT ========== */
 .app {
   display: flex;
   flex-direction: column;
   min-height: 100dvh;
-  max-width: 520px;
+  max-width: 480px;
   margin: 0 auto;
   position: relative;
-  background: var(--bg);
+  background: linear-gradient(180deg, #0B1A2E 0%, #07090D 100%);
 }
 
 /* ========== HEADER ========== */
@@ -64,183 +63,186 @@ body {
   position: sticky;
   top: 0;
   z-index: 50;
-  background: var(--glass);
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
+  background: rgba(11,26,46,0.92);
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
   border-bottom: 1px solid var(--line);
-  padding: calc(12px + var(--safe-top)) 16px 12px;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 8px;
-}
-.logo-area {
+  padding: calc(10px + var(--safe-top)) 14px 10px;
   display: flex;
   align-items: center;
   gap: 10px;
-  min-width: 0;
 }
 .logo {
-  width: 40px;
-  height: 40px;
+  width: 42px;
+  height: 42px;
   border-radius: 12px;
-  background: linear-gradient(135deg, var(--primary), #0a58ca);
+  background: linear-gradient(145deg, #1A3150, #0B1A2E);
+  border: 1.5px solid var(--gold);
   display: grid;
   place-items: center;
-  color: white;
-  font-size: 1.3rem;
   flex-shrink: 0;
-  box-shadow: 0 4px 12px rgba(13,110,253,0.35);
+  box-shadow: 0 4px 14px rgba(212,179,106,0.25);
 }
+.logo svg { width: 26px; height: 26px; }
 .brand {
-  display: flex;
-  flex-direction: column;
+  flex: 1;
   min-width: 0;
 }
 .brand h1 {
-  font-size: 1.05rem;
+  font-size: 1.12rem;
   font-weight: 800;
   letter-spacing: -0.02em;
+  color: var(--ink);
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
 }
 .brand p {
-  font-size: 0.7rem;
-  color: var(--mute);
+  font-size: 0.68rem;
+  color: var(--gold);
+  font-weight: 600;
+  margin-top: 1px;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
 }
+
+/* Compact cubic action cluster */
 .header-actions {
-  display: flex;
-  gap: 6px;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-template-rows: 1fr 1fr;
+  gap: 5px;
   flex-shrink: 0;
 }
 .hbtn {
-  width: 40px;
-  height: 40px;
-  border-radius: 12px;
+  width: 36px;
+  height: 36px;
+  border-radius: 10px;
   border: 1px solid var(--line);
-  background: white;
+  background: var(--navy2);
+  color: var(--ink);
   display: grid;
   place-items: center;
-  font-size: 1.15rem;
+  font-size: 0.95rem;
   cursor: pointer;
   transition: all 0.15s;
+  position: relative;
 }
-.hbtn:active { transform: scale(0.92); background: #f0f4f8; }
-.hbtn span { display: none; font-size: 0.7rem; font-weight: 700; }
-@media (min-width: 420px) {
-  .hbtn { width: auto; padding: 0 12px; gap: 6px; display: flex; align-items: center; }
-  .hbtn span { display: inline; }
+.hbtn:active { transform: scale(0.92); background: var(--navy3); }
+.hbtn.active-lang {
+  background: var(--gold);
+  color: #0B1A2E;
+  border-color: var(--gold);
+  font-weight: 800;
+  font-size: 0.72rem;
+}
+.hbtn .tip {
+  display: none;
 }
 
-/* ========== STATUS BAR ========== */
+/* ========== STATUS ========== */
 .status-bar {
   display: flex;
   align-items: center;
   justify-content: center;
   gap: 8px;
-  padding: 10px 16px;
-  font-size: 0.85rem;
+  padding: 10px 16px 6px;
+  font-size: 0.82rem;
   font-weight: 700;
   color: var(--mute);
 }
 .status-dot {
-  width: 10px;
-  height: 10px;
+  width: 9px;
+  height: 9px;
   border-radius: 50%;
   background: var(--success);
   box-shadow: 0 0 0 3px rgba(0,200,150,0.25);
-  animation: pulse 2s infinite;
 }
-.status-bar.listening .status-dot { background: var(--danger); box-shadow: 0 0 0 3px rgba(255,77,79,0.3); }
-.status-bar.translating .status-dot { background: var(--primary); box-shadow: 0 0 0 3px rgba(13,110,253,0.3); }
-.status-bar.speaking .status-dot { background: var(--purple); box-shadow: 0 0 0 3px rgba(124,92,252,0.3); }
-.status-bar.waiting .status-dot { background: var(--warning); box-shadow: 0 0 0 3px rgba(255,193,7,0.3); }
-.status-bar.error .status-dot { background: var(--danger); animation: none; }
+.status-bar.listening .status-dot { background: var(--danger); box-shadow: 0 0 0 3px rgba(255,90,95,0.3); }
+.status-bar.translating .status-dot { background: var(--blue); box-shadow: 0 0 0 3px rgba(59,130,246,0.3); }
+.status-bar.speaking .status-dot { background: var(--gold); box-shadow: 0 0 0 3px rgba(212,179,106,0.3); }
+.status-bar.waiting .status-dot { background: #F59E0B; }
+.status-bar.error .status-dot { background: var(--danger); }
 
-/* ========== MAIN CONTENT ========== */
+/* ========== MAIN ========== */
 .main {
   flex: 1;
   display: flex;
   flex-direction: column;
-  padding: 0 16px 16px;
+  padding: 4px 14px 12px;
   gap: 12px;
   overflow-y: auto;
   -webkit-overflow-scrolling: touch;
 }
 
-/* ========== CONVERSATION CIRCLE ========== */
+/* ========== AVATARS ========== */
 .circle-area {
   display: flex;
   flex-direction: column;
   align-items: center;
-  padding: 8px 0 4px;
+  padding: 6px 0 2px;
 }
 .avatars {
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 8px;
+  gap: 10px;
   width: 100%;
-  max-width: 340px;
 }
 .avatar {
   position: relative;
-  width: 88px;
-  height: 88px;
+  width: 78px;
+  height: 78px;
   border-radius: 50%;
-  background: white;
-  border: 3px solid var(--line);
+  background: var(--navy2);
+  border: 2.5px solid var(--line);
   display: grid;
   place-items: center;
-  font-size: 2.6rem;
-  box-shadow: var(--shadow);
+  font-size: 2.3rem;
+  box-shadow: 0 8px 24px rgba(0,0,0,0.35);
   transition: all 0.3s ease;
   animation: float 4s ease-in-out infinite;
 }
 .avatar.left { animation-delay: 0s; }
-.avatar.right { animation-delay: 1.2s; }
+.avatar.right { animation-delay: 1.1s; }
 .avatar .label {
   position: absolute;
-  bottom: -22px;
+  bottom: -20px;
   left: 50%;
   transform: translateX(-50%);
-  font-size: 0.68rem;
+  font-size: 0.65rem;
   font-weight: 700;
   color: var(--mute);
   white-space: nowrap;
-  background: var(--bg);
-  padding: 1px 6px;
+  background: #07090D;
+  padding: 1px 7px;
   border-radius: 6px;
 }
 .avatar.listening {
-  border-color: var(--primary);
-  box-shadow: 0 0 0 6px rgba(13,110,253,0.2), var(--shadow);
-  animation: listening 1.2s ease-in-out infinite;
+  border-color: var(--blue);
+  box-shadow: 0 0 0 5px rgba(59,130,246,0.25), 0 8px 24px rgba(0,0,0,0.35);
+  animation: listening 1.1s ease-in-out infinite;
 }
 .avatar.processing {
-  border-color: var(--purple);
-  box-shadow: 0 0 0 6px rgba(124,92,252,0.25), var(--shadow);
+  border-color: #A78BFA;
+  box-shadow: 0 0 0 5px rgba(167,139,250,0.25), 0 8px 24px rgba(0,0,0,0.35);
 }
 .avatar.speaking {
-  border-color: var(--success);
-  box-shadow: 0 0 0 6px rgba(0,200,150,0.25), var(--shadow);
-  animation: speaking 0.8s ease-in-out infinite;
+  border-color: var(--gold);
+  box-shadow: 0 0 0 5px rgba(212,179,106,0.3), 0 8px 24px rgba(0,0,0,0.35);
+  animation: speaking 0.75s ease-in-out infinite;
 }
 .avatar.error {
   border-color: var(--danger);
-  box-shadow: 0 0 0 6px rgba(255,77,79,0.25), var(--shadow);
 }
 .wave-center {
-  width: 48px;
-  height: 48px;
+  width: 40px;
+  height: 40px;
   display: grid;
   place-items: center;
-  font-size: 1.4rem;
-  color: var(--primary);
+  font-size: 1.2rem;
+  color: var(--gold);
   position: relative;
 }
 .wave-center .waves {
@@ -248,136 +250,121 @@ body {
   width: 100%;
   height: 100%;
   border-radius: 50%;
-  border: 2px solid var(--primary);
+  border: 2px solid var(--gold);
   opacity: 0;
 }
 .wave-center.active .waves {
-  animation: translating 1.6s ease-out infinite;
+  animation: translating 1.5s ease-out infinite;
 }
-.wave-center.active .waves:nth-child(2) { animation-delay: 0.4s; }
-.wave-center.active .waves:nth-child(3) { animation-delay: 0.8s; }
+.wave-center.active .waves:nth-child(2) { animation-delay: 0.35s; }
+.wave-center.active .waves:nth-child(3) { animation-delay: 0.7s; }
 
-/* ========== GUIDE SYSTEM ========== */
+/* ========== GUIDE ========== */
 .guide {
   text-align: center;
-  padding: 14px 12px;
-  background: white;
+  padding: 12px 14px;
+  background: var(--card);
   border-radius: var(--radius);
-  box-shadow: var(--shadow);
   border: 1px solid var(--line);
-  position: relative;
-  min-height: 56px;
   display: flex;
   align-items: center;
   justify-content: center;
   gap: 10px;
+  min-height: 52px;
 }
-.guide-icon {
-  font-size: 1.5rem;
-  animation: bounce 1.4s ease-in-out infinite;
-}
-.guide-text {
-  font-size: 1.05rem;
-  font-weight: 700;
-  color: var(--ink);
-}
-.guide.listening { background: linear-gradient(135deg, #fff5f5, #fff); border-color: #ffc9c9; }
-.guide.translating { background: linear-gradient(135deg, #f0f7ff, #fff); border-color: #b6d4fe; }
-.guide.speaking { background: linear-gradient(135deg, #e8faf5, #fff); border-color: #a3e9d6; }
-.guide.waiting { background: linear-gradient(135deg, #fffbeb, #fff); border-color: #ffe69c; }
+.guide-icon { font-size: 1.35rem; animation: bounce 1.4s ease-in-out infinite; }
+.guide-text { font-size: 0.98rem; font-weight: 700; color: var(--ink); }
+.guide.listening { border-color: rgba(59,130,246,0.4); background: rgba(59,130,246,0.08); }
+.guide.translating { border-color: rgba(167,139,250,0.4); background: rgba(167,139,250,0.08); }
+.guide.speaking { border-color: rgba(212,179,106,0.45); background: rgba(212,179,106,0.1); }
+.guide.waiting { border-color: rgba(245,158,11,0.4); background: rgba(245,158,11,0.08); }
 
 /* ========== TRANSLATION CARD ========== */
 .trans-card {
-  background: white;
+  background: var(--card);
   border-radius: var(--radius);
-  padding: 16px;
-  box-shadow: var(--shadow);
+  padding: 14px 16px;
   border: 1px solid var(--line);
   display: none;
 }
-.trans-card.show { display: block; animation: fadeUp 0.3s ease; }
-.trans-row {
-  display: flex;
-  gap: 10px;
-  margin-bottom: 10px;
-}
+.trans-card.show { display: block; animation: fadeUp 0.28s ease; }
+.trans-row { display: flex; gap: 10px; margin-bottom: 8px; }
 .trans-row:last-child { margin-bottom: 0; }
 .trans-label {
-  font-size: 0.7rem;
+  font-size: 0.65rem;
   font-weight: 800;
   text-transform: uppercase;
-  letter-spacing: 0.04em;
-  color: var(--mute);
-  min-width: 70px;
-  padding-top: 2px;
+  letter-spacing: 0.05em;
+  color: var(--gold);
+  min-width: 64px;
+  padding-top: 3px;
 }
 .trans-text {
-  font-size: 1.1rem;
+  font-size: 1.05rem;
   font-weight: 600;
   flex: 1;
   word-break: break-word;
+  color: var(--ink);
 }
-.trans-text.original { color: var(--mute); }
-.trans-text.translated { color: var(--ink); }
+.trans-text.original { color: var(--mute); font-weight: 500; }
 
 /* ========== ACTION BUTTONS ========== */
 .actions {
   display: flex;
-  gap: 14px;
+  gap: 16px;
   justify-content: center;
-  padding: 8px 0 4px;
+  padding: 6px 0 2px;
 }
 .fab {
-  width: 88px;
-  height: 88px;
+  width: 84px;
+  height: 84px;
   border-radius: 50%;
   border: none;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: 2px;
-  font-size: 1.7rem;
+  gap: 3px;
+  font-size: 1.55rem;
   font-weight: 800;
   cursor: pointer;
-  box-shadow: 0 8px 28px rgba(0,0,0,0.18);
+  box-shadow: 0 8px 28px rgba(0,0,0,0.4);
   transition: all 0.2s;
   position: relative;
-  overflow: hidden;
 }
 .fab span {
-  font-size: 0.65rem;
+  font-size: 0.62rem;
   font-weight: 800;
-  letter-spacing: 0.02em;
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
 }
 .fab.record {
-  background: linear-gradient(145deg, var(--primary), #0a58ca);
+  background: linear-gradient(145deg, #3B82F6, #2563EB);
   color: white;
 }
 .fab.record.listening {
-  background: linear-gradient(145deg, var(--danger), #d9363e);
-  animation: pulse-ring 1.2s ease-out infinite;
+  background: linear-gradient(145deg, #EF4444, #DC2626);
+  animation: pulse-ring 1.15s ease-out infinite;
 }
 .fab.record.processing {
-  background: linear-gradient(145deg, var(--purple), #5a3fcf);
+  background: linear-gradient(145deg, #8B5CF6, #7C3AED);
 }
 .fab.speak {
-  background: linear-gradient(145deg, var(--success), #00a87a);
-  color: white;
+  background: linear-gradient(145deg, var(--gold), #C9A04E);
+  color: #0B1A2E;
 }
-.fab.speak:disabled,
-.fab.record:disabled {
-  opacity: 0.45;
+.fab:disabled {
+  opacity: 0.4;
   cursor: not-allowed;
   transform: none !important;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.25);
 }
 .fab:not(:disabled):active { transform: scale(0.94); }
-.fab:not(:disabled):hover { transform: translateY(-2px); }
 
-/* ========== CHAT HISTORY ========== */
+/* ========== HISTORY ========== */
 .history-section {
   flex: 1;
-  min-height: 120px;
+  min-height: 100px;
   display: flex;
   flex-direction: column;
 }
@@ -386,7 +373,7 @@ body {
   align-items: center;
   justify-content: space-between;
   margin-bottom: 8px;
-  font-size: 0.8rem;
+  font-size: 0.78rem;
   font-weight: 700;
   color: var(--mute);
 }
@@ -395,147 +382,128 @@ body {
   overflow-y: auto;
   display: flex;
   flex-direction: column;
-  gap: 10px;
-  padding-bottom: 8px;
-  max-height: 280px;
+  gap: 9px;
+  padding-bottom: 6px;
+  max-height: 240px;
 }
 .bubble {
   max-width: 88%;
-  padding: 10px 14px;
-  border-radius: 18px;
-  font-size: 0.95rem;
+  padding: 10px 13px;
+  border-radius: 16px;
+  font-size: 0.92rem;
   line-height: 1.4;
   word-break: break-word;
-  animation: fadeUp 0.25s ease;
+  animation: fadeUp 0.22s ease;
 }
 .bubble.me {
   align-self: flex-end;
-  background: var(--primary);
+  background: linear-gradient(135deg, #3B82F6, #2563EB);
   color: white;
-  border-bottom-right-radius: 6px;
+  border-bottom-right-radius: 5px;
 }
 .bubble.them {
   align-self: flex-start;
-  background: #E8EEF5;
-  color: var(--ink);
-  border-bottom-left-radius: 6px;
-}
-.bubble .meta {
-  font-size: 0.65rem;
-  opacity: 0.75;
-  margin-top: 4px;
-  font-weight: 600;
-}
-.bubble.trans {
-  background: white;
+  background: var(--navy2);
   border: 1px solid var(--line);
   color: var(--ink);
-  align-self: flex-start;
-  margin-left: 12px;
-  max-width: 80%;
+  border-bottom-left-radius: 5px;
+}
+.bubble .meta {
+  font-size: 0.62rem;
+  opacity: 0.75;
+  margin-top: 3px;
+  font-weight: 600;
 }
 .empty-hist {
   text-align: center;
   color: var(--mute);
-  font-size: 0.9rem;
-  padding: 24px 12px;
+  font-size: 0.88rem;
+  padding: 20px 12px;
 }
 
 /* ========== SETTINGS DRAWER ========== */
 .settings-overlay {
   position: fixed;
   inset: 0;
-  background: rgba(7,27,53,0.45);
+  background: rgba(0,0,0,0.55);
   z-index: 100;
   opacity: 0;
   pointer-events: none;
   transition: opacity 0.25s;
 }
-.settings-overlay.open {
-  opacity: 1;
-  pointer-events: auto;
-}
+.settings-overlay.open { opacity: 1; pointer-events: auto; }
 .settings-drawer {
   position: fixed;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  max-height: 85dvh;
-  background: white;
-  border-radius: 28px 28px 0 0;
+  left: 0; right: 0; bottom: 0;
+  max-height: 82dvh;
+  background: #0F1F35;
+  border-radius: 24px 24px 0 0;
   z-index: 101;
   transform: translateY(110%);
   transition: transform 0.32s cubic-bezier(0.32, 0.72, 0, 1);
   overflow: hidden;
   display: flex;
   flex-direction: column;
-  max-width: 520px;
+  max-width: 480px;
   margin: 0 auto;
-  box-shadow: 0 -12px 40px rgba(0,0,0,0.15);
+  border: 1px solid var(--line);
+  border-bottom: none;
 }
 .settings-drawer.open { transform: translateY(0); }
 .drawer-handle {
-  width: 40px;
-  height: 5px;
-  background: #D0D7E0;
-  border-radius: 3px;
-  margin: 10px auto 6px;
+  width: 36px; height: 4px;
+  background: rgba(255,255,255,0.2);
+  border-radius: 2px;
+  margin: 10px auto 4px;
 }
 .drawer-header {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 8px 20px 12px;
+  padding: 6px 18px 12px;
   border-bottom: 1px solid var(--line);
 }
-.drawer-header h2 {
-  font-size: 1.15rem;
-  font-weight: 800;
-}
+.drawer-header h2 { font-size: 1.1rem; font-weight: 800; color: var(--ink); }
 .drawer-close {
-  width: 36px;
-  height: 36px;
+  width: 34px; height: 34px;
   border-radius: 50%;
   border: none;
-  background: #F0F4F8;
-  font-size: 1.2rem;
+  background: var(--navy2);
+  color: var(--ink);
+  font-size: 1.1rem;
   cursor: pointer;
 }
 .drawer-body {
   overflow-y: auto;
-  padding: 12px 20px calc(24px + var(--safe-bottom));
+  padding: 12px 18px calc(22px + var(--safe-bottom));
   -webkit-overflow-scrolling: touch;
 }
-.section {
-  margin-bottom: 22px;
-}
+.section { margin-bottom: 20px; }
 .section h3 {
-  font-size: 0.75rem;
+  font-size: 0.7rem;
   font-weight: 800;
   text-transform: uppercase;
-  letter-spacing: 0.06em;
-  color: var(--mute);
+  letter-spacing: 0.07em;
+  color: var(--gold);
   margin-bottom: 10px;
 }
-.field {
-  margin-bottom: 12px;
-}
+.field { margin-bottom: 12px; }
 .field label {
   display: block;
-  font-size: 0.85rem;
+  font-size: 0.82rem;
   font-weight: 600;
   margin-bottom: 4px;
-  color: var(--ink);
+  color: var(--mute);
 }
 .field select,
 .field input[type="password"],
 .field input[type="text"] {
   width: 100%;
-  padding: 12px 14px;
+  padding: 11px 13px;
   border: 1px solid var(--line);
-  border-radius: 14px;
+  border-radius: 12px;
   font-size: 16px;
-  background: #F7F9FC;
+  background: var(--navy2);
   color: var(--ink);
   -webkit-appearance: none;
 }
@@ -543,64 +511,54 @@ body {
   display: flex;
   align-items: center;
   gap: 10px;
-  padding: 10px 0;
-  font-size: 0.95rem;
+  padding: 9px 0;
+  font-size: 0.92rem;
   font-weight: 600;
+  color: var(--ink);
 }
-.check input {
-  width: 22px;
-  height: 22px;
-  accent-color: var(--primary);
-}
-.btn-row {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 8px;
-  margin-top: 8px;
-}
+.check input { width: 20px; height: 20px; accent-color: var(--gold); }
+.btn-row { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 6px; }
 .sbtn {
-  padding: 10px 16px;
+  padding: 9px 14px;
   border-radius: 999px;
   border: 1px solid var(--line);
-  background: white;
+  background: var(--navy2);
+  color: var(--ink);
   font-weight: 700;
-  font-size: 0.9rem;
+  font-size: 0.85rem;
   cursor: pointer;
 }
 .sbtn.primary {
-  background: var(--primary);
-  color: white;
-  border-color: var(--primary);
+  background: var(--gold);
+  color: #0B1A2E;
+  border-color: var(--gold);
 }
 .sbtn:active { transform: scale(0.96); }
-.mode-pills {
-  display: flex;
-  gap: 8px;
-  margin-bottom: 16px;
-}
+.mode-pills { display: flex; gap: 7px; margin-bottom: 12px; }
 .mode-pill {
   flex: 1;
-  padding: 10px 6px;
-  border-radius: 14px;
-  border: 2px solid var(--line);
-  background: white;
+  padding: 9px 4px;
+  border-radius: 12px;
+  border: 1.5px solid var(--line);
+  background: var(--navy2);
   font-weight: 700;
-  font-size: 0.8rem;
+  font-size: 0.75rem;
   text-align: center;
   cursor: pointer;
+  color: var(--mute);
   transition: all 0.15s;
 }
 .mode-pill.active {
-  border-color: var(--primary);
-  background: #E8F1FF;
-  color: var(--primary);
+  border-color: var(--gold);
+  background: rgba(212,179,106,0.15);
+  color: var(--gold);
 }
 
-/* ========== ONBOARDING ========== */
-.onboarding {
+/* ========== GUIDE MODAL (instead of auto onboarding) ========== */
+.guide-modal {
   position: fixed;
   inset: 0;
-  background: rgba(7,27,53,0.75);
+  background: rgba(0,0,0,0.65);
   z-index: 200;
   display: flex;
   align-items: center;
@@ -608,168 +566,133 @@ body {
   padding: 20px;
   opacity: 0;
   pointer-events: none;
-  transition: opacity 0.3s;
+  transition: opacity 0.25s;
 }
-.onboarding.open {
-  opacity: 1;
-  pointer-events: auto;
-}
-.onboard-card {
-  background: white;
-  border-radius: 28px;
-  padding: 28px 24px;
-  max-width: 360px;
+.guide-modal.open { opacity: 1; pointer-events: auto; }
+.guide-card {
+  background: #0F1F35;
+  border-radius: 24px;
+  padding: 24px 20px;
+  max-width: 340px;
   width: 100%;
   text-align: center;
-  box-shadow: 0 20px 60px rgba(0,0,0,0.25);
-  transform: translateY(20px);
-  transition: transform 0.3s;
+  border: 1px solid var(--line);
+  box-shadow: 0 24px 60px rgba(0,0,0,0.5);
+  transform: translateY(16px);
+  transition: transform 0.25s;
 }
-.onboarding.open .onboard-card { transform: translateY(0); }
-.onboard-card .emoji {
-  font-size: 3.2rem;
-  margin-bottom: 12px;
+.guide-modal.open .guide-card { transform: translateY(0); }
+.guide-card .emoji { font-size: 2.8rem; margin-bottom: 10px; }
+.guide-card h2 { font-size: 1.25rem; font-weight: 800; margin-bottom: 8px; color: var(--ink); }
+.guide-card p { color: var(--mute); font-size: 0.92rem; margin-bottom: 18px; line-height: 1.5; }
+.guide-steps {
+  text-align: left;
+  margin: 0 0 18px;
+  padding: 0 4px;
 }
-.onboard-card h2 {
-  font-size: 1.4rem;
-  font-weight: 800;
-  margin-bottom: 8px;
-}
-.onboard-card p {
-  color: var(--mute);
-  font-size: 0.95rem;
-  margin-bottom: 22px;
-  line-height: 1.5;
-}
-.onboard-dots {
-  display: flex;
-  justify-content: center;
-  gap: 6px;
-  margin-bottom: 18px;
-}
-.dot {
-  width: 8px;
-  height: 8px;
-  border-radius: 50%;
-  background: #D0D7E0;
-}
-.dot.active { background: var(--primary); width: 20px; border-radius: 4px; }
-.onboard-btns {
+.guide-steps li {
+  list-style: none;
+  padding: 7px 0;
+  font-size: 0.9rem;
+  color: var(--ink);
   display: flex;
   gap: 10px;
+  align-items: flex-start;
 }
-.onboard-btns button {
-  flex: 1;
-  padding: 14px;
-  border-radius: 16px;
+.guide-steps .num {
+  width: 22px; height: 22px;
+  border-radius: 50%;
+  background: var(--gold);
+  color: #0B1A2E;
+  font-size: 0.72rem;
+  font-weight: 800;
+  display: grid;
+  place-items: center;
+  flex-shrink: 0;
+  margin-top: 1px;
+}
+.guide-card button {
+  width: 100%;
+  padding: 13px;
+  border-radius: 14px;
   border: none;
+  background: var(--gold);
+  color: #0B1A2E;
   font-weight: 800;
   font-size: 1rem;
   cursor: pointer;
-}
-.onboard-btns .skip {
-  background: #F0F4F8;
-  color: var(--mute);
-}
-.onboard-btns .next {
-  background: var(--primary);
-  color: white;
 }
 
 /* ========== TOAST ========== */
 .toast {
   position: fixed;
-  bottom: calc(24px + var(--safe-bottom));
+  bottom: calc(28px + var(--safe-bottom));
   left: 50%;
-  transform: translateX(-50%) translateY(80px);
-  background: var(--dark);
-  color: white;
-  padding: 12px 20px;
+  transform: translateX(-50%) translateY(90px);
+  background: #1A3150;
+  color: var(--ink);
+  border: 1px solid var(--line);
+  padding: 11px 18px;
   border-radius: 999px;
-  font-size: 0.9rem;
+  font-size: 0.88rem;
   font-weight: 600;
   z-index: 300;
   opacity: 0;
   transition: all 0.3s;
   pointer-events: none;
-  max-width: 90%;
+  max-width: 92%;
   text-align: center;
+  box-shadow: 0 8px 30px rgba(0,0,0,0.4);
 }
 .toast.show {
   opacity: 1;
   transform: translateX(-50%) translateY(0);
 }
 
-/* ========== FOOTER / MODE ========== */
+/* ========== FOOTER ========== */
 .footer {
-  padding: 8px 16px calc(10px + var(--safe-bottom));
-  display: flex;
-  justify-content: center;
-  gap: 6px;
-  font-size: 0.7rem;
+  padding: 10px 14px calc(12px + var(--safe-bottom));
+  text-align: center;
+  font-size: 0.68rem;
   color: var(--mute);
   border-top: 1px solid var(--line);
-  background: white;
+  background: rgba(11,26,46,0.6);
+  line-height: 1.5;
 }
+.footer strong { color: var(--gold); font-weight: 600; }
 
 /* ========== ANIMATIONS ========== */
 @keyframes float {
   0%, 100% { transform: translateY(0); }
-  50% { transform: translateY(-6px); }
-}
-@keyframes pulse {
-  0%, 100% { opacity: 1; }
-  50% { opacity: 0.6; }
+  50% { transform: translateY(-5px); }
 }
 @keyframes listening {
   0%, 100% { transform: scale(1); }
-  50% { transform: scale(1.04); }
+  50% { transform: scale(1.05); }
 }
 @keyframes speaking {
   0%, 100% { transform: scale(1); }
   50% { transform: scale(1.06); }
 }
 @keyframes translating {
-  0% { transform: scale(0.6); opacity: 0.7; }
-  100% { transform: scale(1.8); opacity: 0; }
+  0% { transform: scale(0.55); opacity: 0.7; }
+  100% { transform: scale(1.7); opacity: 0; }
 }
 @keyframes bounce {
   0%, 100% { transform: translateY(0); }
-  40% { transform: translateY(-6px); }
-  60% { transform: translateY(-3px); }
+  40% { transform: translateY(-5px); }
+  60% { transform: translateY(-2px); }
 }
 @keyframes pulse-ring {
-  0% { box-shadow: 0 0 0 0 rgba(255,77,79,0.45); }
-  70% { box-shadow: 0 0 0 18px rgba(255,77,79,0); }
-  100% { box-shadow: 0 0 0 0 rgba(255,77,79,0); }
+  0% { box-shadow: 0 0 0 0 rgba(239,68,68,0.5); }
+  70% { box-shadow: 0 0 0 16px rgba(239,68,68,0); }
+  100% { box-shadow: 0 0 0 0 rgba(239,68,68,0); }
 }
 @keyframes fadeUp {
-  from { opacity: 0; transform: translateY(10px); }
+  from { opacity: 0; transform: translateY(8px); }
   to { opacity: 1; transform: translateY(0); }
 }
 
-/* Business / Learning extras */
-.extra-panel {
-  display: none;
-  background: white;
-  border-radius: var(--radius);
-  padding: 14px;
-  border: 1px solid var(--line);
-  margin-top: 4px;
-}
-.extra-panel.show { display: block; }
-.note-area {
-  width: 100%;
-  min-height: 70px;
-  border: 1px solid var(--line);
-  border-radius: 14px;
-  padding: 10px;
-  font-size: 15px;
-  resize: vertical;
-  background: #F7F9FC;
-}
-
-/* iPhone Safari optimizations */
 @supports (-webkit-touch-callout: none) {
   .fab { -webkit-user-select: none; user-select: none; }
   body { overscroll-behavior-y: none; }
@@ -781,26 +704,24 @@ body {
 
   <!-- HEADER -->
   <header class="header">
-    <div class="logo-area">
-      <div class="logo">🌐</div>
-      <div class="brand">
-        <h1>InterpretLiveNow</h1>
-        <p>Break Language Barriers Instantly</p>
-      </div>
+    <div class="logo" title="InterpretLiveNow">
+      <!-- Simple globe + speech mark logo -->
+      <svg viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <circle cx="16" cy="16" r="13" stroke="#D4B36A" stroke-width="2"/>
+        <ellipse cx="16" cy="16" rx="6" ry="13" stroke="#D4B36A" stroke-width="1.5"/>
+        <path d="M3 16h26M5 10h22M5 22h22" stroke="#D4B36A" stroke-width="1.2"/>
+        <circle cx="16" cy="16" r="2.5" fill="#D4B36A"/>
+      </svg>
+    </div>
+    <div class="brand">
+      <h1>InterpretLiveNow</h1>
+      <p>Speak · Translate · Understand</p>
     </div>
     <div class="header-actions">
-      <button class="hbtn" id="btnLang" title="Switch language">
-        🌎 <span id="langLabel">EN↔JP</span>
-      </button>
-      <button class="hbtn" id="btnNew" title="New Conversation">
-        🔄 <span>New</span>
-      </button>
-      <button class="hbtn" id="btnSave" title="Save Chat">
-        💾 <span>Save</span>
-      </button>
-      <button class="hbtn" id="btnSettings" title="Settings">
-        ⚙️
-      </button>
+      <button class="hbtn active-lang" id="btnLang" title="Switch language">EN</button>
+      <button class="hbtn" id="btnGuide" title="How to use">?</button>
+      <button class="hbtn" id="btnNew" title="New conversation">↺</button>
+      <button class="hbtn" id="btnSettings" title="Settings">⚙</button>
     </div>
   </header>
 
@@ -812,7 +733,6 @@ body {
 
   <!-- MAIN -->
   <main class="main">
-    <!-- AVATARS -->
     <div class="circle-area">
       <div class="avatars">
         <div class="avatar left" id="avatarLeft">
@@ -832,25 +752,22 @@ body {
       </div>
     </div>
 
-    <!-- GUIDE -->
     <div class="guide" id="guide">
       <div class="guide-icon" id="guideIcon">👉</div>
       <div class="guide-text" id="guideText">Tap Record to start</div>
     </div>
 
-    <!-- TRANSLATION RESULT -->
     <div class="trans-card" id="transCard">
       <div class="trans-row">
-        <div class="trans-label" id="origLabel">You</div>
+        <div class="trans-label" id="origLabel">You said</div>
         <div class="trans-text original" id="origText"></div>
       </div>
       <div class="trans-row">
         <div class="trans-label">Translation</div>
-        <div class="trans-text translated" id="transText"></div>
+        <div class="trans-text" id="transText"></div>
       </div>
     </div>
 
-    <!-- ACTIONS -->
     <div class="actions">
       <button class="fab record" id="btnRecord">
         🎤
@@ -862,19 +779,13 @@ body {
       </button>
     </div>
 
-    <!-- BUSINESS / LEARNING EXTRAS -->
-    <div class="extra-panel" id="extraPanel">
-      <div class="field">
-        <label>Notes</label>
-        <textarea class="note-area" id="notes" placeholder="Add conversation notes..."></textarea>
-      </div>
-    </div>
-
-    <!-- HISTORY -->
     <div class="history-section">
       <div class="history-header">
         <span>Conversation</span>
-        <button class="sbtn" id="btnClearHist" style="padding:4px 10px;font-size:0.75rem;">Clear</button>
+        <div style="display:flex;gap:6px;">
+          <button class="sbtn" id="btnSave" style="padding:4px 10px;font-size:0.72rem;">Save</button>
+          <button class="sbtn" id="btnClearHist" style="padding:4px 10px;font-size:0.72rem;">Clear</button>
+        </div>
       </div>
       <div class="history-list" id="historyList">
         <div class="empty-hist" id="emptyHist">No messages yet. Start speaking!</div>
@@ -884,7 +795,8 @@ body {
 
   <!-- FOOTER -->
   <footer class="footer">
-    <span>InterpretLiveNow · Tourist Mode</span>
+    © 2026 Rafat Kotaki. All rights reserved.<br>
+    <strong>InterpretLiveNow</strong> · V2.0.0
   </footer>
 </div>
 
@@ -893,7 +805,7 @@ body {
 <div class="settings-drawer" id="settingsDrawer">
   <div class="drawer-handle"></div>
   <div class="drawer-header">
-    <h2>⚙ Conversation Tools</h2>
+    <h2>Conversation Tools</h2>
     <button class="drawer-close" id="drawerClose">✕</button>
   </div>
   <div class="drawer-body">
@@ -911,13 +823,12 @@ body {
       <div class="btn-row">
         <button class="sbtn" id="testVoice">🔈 Test Voice</button>
         <button class="sbtn" id="testBeep">🔔 Beep</button>
-        <button class="sbtn" id="runDiag">🩺 Diagnostics</button>
       </div>
       <div class="check">
         <input type="checkbox" id="optBypass">
         <label for="optBypass">Play over mute switch (iPhone)</label>
       </div>
-      <p style="font-size:0.8rem;color:var(--mute);margin-top:6px;" id="soundMsg">Ready</p>
+      <p style="font-size:0.78rem;color:var(--mute);margin-top:6px;" id="soundMsg">Ready</p>
     </div>
 
     <div class="section">
@@ -946,10 +857,6 @@ body {
         <input type="checkbox" id="optAutoSpeak" checked>
         <label for="optAutoSpeak">Auto Speak after translation</label>
       </div>
-      <div class="check">
-        <input type="checkbox" id="optAutoTranslate" checked>
-        <label for="optAutoTranslate">Auto Translate after recording</label>
-      </div>
       <div class="field">
         <label>Google API Key (optional)</label>
         <input type="password" id="apiKey" placeholder="Better quality with key">
@@ -965,17 +872,20 @@ body {
   </div>
 </div>
 
-<!-- ONBOARDING -->
-<div class="onboarding" id="onboarding">
-  <div class="onboard-card">
-    <div class="emoji" id="obEmoji">🌐</div>
-    <h2 id="obTitle">Welcome to InterpretLiveNow</h2>
-    <p id="obBody">Your personal AI interpreter for natural English ↔ Japanese conversations.</p>
-    <div class="onboard-dots" id="obDots"></div>
-    <div class="onboard-btns">
-      <button class="skip" id="obSkip">Skip</button>
-      <button class="next" id="obNext">Next</button>
-    </div>
+<!-- GUIDE MODAL (manual) -->
+<div class="guide-modal" id="guideModal">
+  <div class="guide-card">
+    <div class="emoji">🌐</div>
+    <h2>How to use</h2>
+    <p>Talk with anyone in English or Japanese — no typing needed.</p>
+    <ul class="guide-steps">
+      <li><span class="num">1</span> Tap <strong>Record</strong> and speak in your language</li>
+      <li><span class="num">2</span> Wait for the translation to appear</li>
+      <li><span class="num">3</span> Tap <strong>Speak</strong> so the other person hears it</li>
+      <li><span class="num">4</span> Hand the phone over — they record their reply</li>
+      <li><span class="num">5</span> Keep going back and forth</li>
+    </ul>
+    <button id="guideClose">Got it</button>
   </div>
 </div>
 
@@ -985,7 +895,6 @@ body {
 (() => {
   "use strict";
 
-  /* ========== UTILITIES ========== */
   const $ = id => document.getElementById(id);
   const store = {
     get(k, def) {
@@ -999,16 +908,15 @@ body {
     }
   };
 
-  const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) || (navigator.platform === "MacIntel" && navigator.maxTouchPoints > 1);
-  const standalone = window.matchMedia("(display-mode: standalone)").matches || navigator.standalone;
+  const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) ||
+    (navigator.platform === "MacIntel" && navigator.maxTouchPoints > 1);
+  const standalone = window.matchMedia("(display-mode: standalone)").matches || !!navigator.standalone;
 
-  /* ========== LANGUAGE ========== */
   const LANG = {
     en: { name: "English", tts: "en-US", sr: "en-US", short: "en", emoji: "👨" },
     ja: { name: "日本語", tts: "ja-JP", sr: "ja-JP", short: "ja", emoji: "👩" }
   };
 
-  /* ========== STATE MACHINE ========== */
   const STATE = {
     READY: "ready",
     LISTENING: "listening",
@@ -1019,8 +927,10 @@ body {
     ERROR: "error"
   };
 
+  // dir[0] = language the current speaker will record in
+  // dir[1] = language the translation will be spoken in
+  let dir = ["en", "ja"];
   let state = STATE.READY;
-  let dir = ["en", "ja"]; // speaker language → listener language
   let mode = store.get("mode", "tourist");
   let lastOriginal = "";
   let lastTranslated = "";
@@ -1032,7 +942,6 @@ body {
   /* ========== SPEECH SYNTHESIS ========== */
   const synth = window.speechSynthesis || null;
   let cachedVoices = [];
-  let speechLog = { started: false, ended: false, error: "" };
 
   function refreshVoices() {
     if (!synth) return;
@@ -1041,19 +950,14 @@ body {
   }
 
   function populateVoiceSelects() {
-    const enSel = $("voiceEn");
-    const jaSel = $("voiceJa");
+    const enSel = $("voiceEn"), jaSel = $("voiceJa");
     if (!enSel || !jaSel) return;
     const prevEn = store.get("voiceEn", "");
     const prevJa = store.get("voiceJa", "");
-    enSel.innerHTML = "";
-    jaSel.innerHTML = "";
-    const enVoices = cachedVoices.filter(v => v.lang.startsWith("en"));
-    const jaVoices = cachedVoices.filter(v => v.lang.startsWith("ja"));
+    enSel.innerHTML = jaSel.innerHTML = "";
     const add = (sel, list, prev) => {
       const opt = document.createElement("option");
-      opt.value = "";
-      opt.textContent = "Automatic";
+      opt.value = ""; opt.textContent = "Automatic";
       sel.appendChild(opt);
       list.forEach(v => {
         const o = document.createElement("option");
@@ -1063,12 +967,13 @@ body {
         sel.appendChild(o);
       });
     };
-    add(enSel, enVoices, prevEn);
-    add(jaSel, jaVoices, prevJa);
+    add(enSel, cachedVoices.filter(v => v.lang.startsWith("en")), prevEn);
+    add(jaSel, cachedVoices.filter(v => v.lang.startsWith("ja")), prevJa);
   }
 
   function pickVoice(lang) {
-    const name = store.get(lang === "en-US" ? "voiceEn" : "voiceJa", "");
+    const key = lang.startsWith("en") ? "voiceEn" : "voiceJa";
+    const name = store.get(key, "");
     if (name) {
       const v = cachedVoices.find(x => x.name === name);
       if (v) return v;
@@ -1097,7 +1002,6 @@ body {
       if (!synth || !text) { resolve(); return; }
       stopSpeech();
       const my = speechToken;
-      speechLog = { started: false, ended: false, error: "" };
 
       const utter = new SpeechSynthesisUtterance(text);
       utter.lang = langCode;
@@ -1105,7 +1009,6 @@ body {
       const voice = pickVoice(langCode);
       if (voice) utter.voice = voice;
 
-      // iOS mute bypass experimental
       if (store.get("bypass", false) && isIOS) {
         try {
           const ctx = new (window.AudioContext || window.webkitAudioContext)();
@@ -1113,34 +1016,28 @@ body {
           osc.frequency.value = 0.01;
           osc.connect(ctx.destination);
           osc.start();
-          setTimeout(() => { try { osc.stop(); ctx.close(); } catch {} }, 50);
+          setTimeout(() => { try { osc.stop(); ctx.close(); } catch {} }, 40);
         } catch {}
       }
 
-      utter.onstart = () => {
-        if (my !== speechToken) return;
-        speechLog.started = true;
-        setState(STATE.SPEAKING);
-      };
+      utter.onstart = () => { if (my === speechToken) setState(STATE.SPEAKING); };
       utter.onend = () => {
-        if (my !== speechToken) return;
-        speechLog.ended = true;
-        setState(STATE.WAITING_REPLY);
-        resolve();
+        if (my === speechToken) {
+          setState(STATE.WAITING_REPLY);
+          resolve();
+        }
       };
-      utter.onerror = e => {
-        if (my !== speechToken) return;
-        speechLog.error = e.error || "unknown";
-        setState(STATE.READY_TO_SPEAK);
-        soundMsg("Voice error: " + speechLog.error, true);
-        resolve();
+      utter.onerror = () => {
+        if (my === speechToken) {
+          setState(STATE.READY_TO_SPEAK);
+          resolve();
+        }
       };
 
       try {
         if (synth.paused) synth.resume();
         synth.speak(utter);
-      } catch (e) {
-        soundMsg("Could not speak: " + (e.message || "error"), true);
+      } catch {
         resolve();
       }
     });
@@ -1148,28 +1045,31 @@ body {
 
   /* ========== SPEECH RECOGNITION ========== */
   const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
-  const canSR = !!SR && !(isIOS && standalone); // iOS PWA often blocks recognition
+  // iOS blocks Web Speech Recognition inside standalone PWAs
+  const canSR = !!SR && !(isIOS && standalone);
 
   function startListening() {
     if (!canSR) {
-      toast(isIOS ? "On iPhone home-screen apps, use the keyboard microphone instead." : "Speech recognition not available");
+      if (isIOS && standalone) {
+        toast("On iPhone home-screen apps, open in Safari or use the keyboard microphone.");
+      } else {
+        toast("Speech recognition is not available in this browser.");
+      }
       return;
     }
     primeSpeech();
     stopSpeech();
-    if (recognition) {
-      try { recognition.abort(); } catch {}
-    }
+    if (recognition) { try { recognition.abort(); } catch {} }
 
     recognition = new SR();
-    recognition.lang = LANG[dir[0]].sr;
+    recognition.lang = LANG[dir[0]].sr;          // record in current speaker language
     recognition.interimResults = false;
     recognition.continuous = false;
     recognition.maxAlternatives = 1;
 
     recognition.onstart = () => setState(STATE.LISTENING);
     recognition.onresult = async ev => {
-      const text = (ev.results[0] && ev.results[0][0] && ev.results[0][0].transcript || "").trim();
+      const text = (ev.results[0]?.[0]?.transcript || "").trim();
       if (!text) {
         setState(STATE.READY);
         toast("Didn't catch that. Try again.");
@@ -1186,36 +1086,27 @@ body {
         return;
       }
       setState(STATE.ERROR);
-      toast("Mic error: " + e.error);
+      toast("Microphone error: " + e.error);
       setTimeout(() => setState(STATE.READY), 2000);
     };
     recognition.onend = () => {
       if (state === STATE.LISTENING) setState(STATE.READY);
     };
 
-    try {
-      recognition.start();
-    } catch (e) {
-      toast("Could not start microphone");
-      setState(STATE.READY);
-    }
+    try { recognition.start(); }
+    catch { toast("Could not start microphone"); setState(STATE.READY); }
   }
 
   function stopListening() {
-    if (recognition) {
-      try { recognition.stop(); } catch {}
-    }
+    if (recognition) { try { recognition.stop(); } catch {} }
   }
 
   /* ========== TRANSLATION ========== */
   async function ftch(url, opts) {
     const c = new AbortController();
     const t = setTimeout(() => c.abort(), 12000);
-    try {
-      return await fetch(url, Object.assign({ signal: c.signal }, opts || {}));
-    } finally {
-      clearTimeout(t);
-    }
+    try { return await fetch(url, Object.assign({ signal: c.signal }, opts || {})); }
+    finally { clearTimeout(t); }
   }
 
   async function translateViaGoogleKey(q, from, to, key) {
@@ -1240,7 +1131,7 @@ body {
     const r = await ftch("https://api.mymemory.translated.net/get?q=" + encodeURIComponent(q) + "&langpair=" + from + "|" + to);
     if (!r.ok) throw new Error("MyMemory " + r.status);
     const j = await r.json();
-    const t = j && j.responseData && j.responseData.translatedText;
+    const t = j?.responseData?.translatedText;
     if (!t || t === q) throw new Error("Empty result");
     return t;
   }
@@ -1266,6 +1157,7 @@ body {
     $("transCard").classList.add("show");
 
     try {
+      // from = speaker language, to = the other language
       const out = await translate(text, LANG[dir[0]].short, LANG[dir[1]].short);
       lastTranslated = out;
       $("transText").textContent = out;
@@ -1274,22 +1166,20 @@ body {
       $("btnSpeak").disabled = false;
 
       if (store.get("autoSpeak", true)) {
+        // Speak the translation in the OTHER language
         await speak(out, LANG[dir[1]].tts);
       }
     } catch (e) {
       $("transText").textContent = "Translation failed";
       setState(STATE.ERROR);
-      toast(navigator.onLine ? "Translation failed: " + e.message : "Offline — connect to translate");
-      setTimeout(() => setState(STATE.READY), 2500);
+      toast(navigator.onLine ? "Translation failed" : "Offline — connect to translate");
+      setTimeout(() => setState(STATE.READY), 2200);
     }
   }
 
   /* ========== HISTORY ========== */
   function addToHistory(orig, trans, from, to) {
-    history.push({
-      orig, trans, from, to,
-      time: new Date().toISOString()
-    });
+    history.push({ orig, trans, from, to, time: new Date().toISOString() });
     if (history.length > 80) history = history.slice(-80);
     store.set("history", history);
     renderHistory();
@@ -1309,16 +1199,20 @@ body {
     history.slice().reverse().forEach(h => {
       const b1 = document.createElement("div");
       b1.className = "bubble me";
-      b1.innerHTML = `${h.orig}<div class="meta">${LANG[h.from].name}</div>`;
+      b1.innerHTML = `${escapeHtml(h.orig)}<div class="meta">${LANG[h.from].name}</div>`;
       const b2 = document.createElement("div");
       b2.className = "bubble them";
-      b2.innerHTML = `${h.trans}<div class="meta">${LANG[h.to].name}</div>`;
+      b2.innerHTML = `${escapeHtml(h.trans)}<div class="meta">${LANG[h.to].name}</div>`;
       list.appendChild(b1);
       list.appendChild(b2);
     });
   }
 
-  /* ========== UI STATE MACHINE ========== */
+  function escapeHtml(s) {
+    return String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");
+  }
+
+  /* ========== UI STATE ========== */
   function setState(s) {
     state = s;
     const bar = $("statusBar");
@@ -1329,7 +1223,6 @@ body {
     const rec = $("btnRecord");
     const spk = $("btnSpeak");
 
-    // reset classes
     bar.className = "status-bar";
     guide.className = "guide";
     left.className = "avatar left";
@@ -1342,60 +1235,63 @@ body {
     const map = {
       [STATE.READY]: {
         status: "Ready",
-        guideIcon: "👉",
-        guideText: "Tap Record to start",
-        left: "", right: ""
+        icon: "👉",
+        text: "Tap Record to start"
       },
       [STATE.LISTENING]: {
         status: "Listening…",
-        guideIcon: "🎤",
-        guideText: "Speak naturally",
-        left: "listening", right: "",
-        bar: "listening", guideCls: "listening",
+        icon: "🎤",
+        text: "Speak naturally",
+        left: "listening",
+        bar: "listening",
+        guideCls: "listening",
         recCls: "listening"
       },
       [STATE.TRANSLATING]: {
         status: "Translating…",
-        guideIcon: "⏳",
-        guideText: "Translating…",
-        left: "processing", right: "processing",
-        bar: "translating", guideCls: "translating",
-        recCls: "processing", wave: true
+        icon: "⏳",
+        text: "Translating…",
+        left: "processing",
+        right: "processing",
+        bar: "translating",
+        guideCls: "translating",
+        recCls: "processing",
+        wave: true
       },
       [STATE.READY_TO_SPEAK]: {
         status: "Ready to Speak",
-        guideIcon: "👉",
-        guideText: "Tap Speak",
-        left: "", right: "",
-        bar: "", guideCls: ""
+        icon: "👉",
+        text: "Tap Speak to play translation"
       },
       [STATE.SPEAKING]: {
         status: "Speaking…",
-        guideIcon: "🔊",
-        guideText: "Hand phone to the other person",
-        left: "", right: "speaking",
-        bar: "speaking", guideCls: "speaking"
+        icon: "🔊",
+        text: "Hand phone to the other person",
+        right: "speaking",
+        bar: "speaking",
+        guideCls: "speaking"
       },
       [STATE.WAITING_REPLY]: {
         status: "Waiting for reply",
-        guideIcon: "👉",
-        guideText: "Waiting for reply — tap Record",
-        left: "", right: "",
-        bar: "waiting", guideCls: "waiting"
+        icon: "👉",
+        text: "Other person can now Record",
+        bar: "waiting",
+        guideCls: "waiting"
       },
       [STATE.ERROR]: {
         status: "Error",
-        guideIcon: "⚠️",
-        guideText: "Something went wrong",
-        left: "error", right: "error",
-        bar: "error", guideCls: ""
+        icon: "⚠️",
+        text: "Something went wrong",
+        left: "error",
+        right: "error",
+        bar: "error"
       }
     };
 
     const m = map[s] || map[STATE.READY];
     $("statusText").textContent = m.status;
-    $("guideIcon").textContent = m.guideIcon;
-    $("guideText").textContent = m.guideText;
+    $("guideIcon").textContent = m.icon;
+    $("guideText").textContent = m.text;
     if (m.bar) bar.classList.add(m.bar);
     if (m.guideCls) guide.classList.add(m.guideCls);
     if (m.left) left.classList.add(m.left);
@@ -1405,15 +1301,19 @@ body {
   }
 
   /* ========== LANGUAGE SWITCH ========== */
-  function swapDirection() {
-    dir = [dir[1], dir[0]];
+  function updateLangUI() {
     $("labelLeft").textContent = LANG[dir[0]].name;
     $("labelRight").textContent = LANG[dir[1]].name;
-    $("avatarLeft").firstChild.textContent = LANG[dir[0]].emoji;
-    $("avatarRight").firstChild.textContent = LANG[dir[1]].emoji;
-    $("langLabel").textContent = dir[0] === "en" ? "EN↔JP" : "JP↔EN";
+    $("avatarLeft").childNodes[0].textContent = LANG[dir[0]].emoji;
+    $("avatarRight").childNodes[0].textContent = LANG[dir[1]].emoji;
+    $("btnLang").textContent = dir[0].toUpperCase();
     $("origLabel").textContent = LANG[dir[0]].name;
-    toast("Now speaking " + LANG[dir[0]].name);
+  }
+
+  function swapDirection() {
+    dir = [dir[1], dir[0]];
+    updateLangUI();
+    toast("Now recording in " + LANG[dir[0]].name);
   }
 
   /* ========== MODE ========== */
@@ -1423,14 +1323,9 @@ body {
     document.querySelectorAll(".mode-pill").forEach(p => {
       p.classList.toggle("active", p.dataset.mode === m);
     });
-    const footer = document.querySelector(".footer span");
-    if (footer) footer.textContent = "InterpretLiveNow · " + m.charAt(0).toUpperCase() + m.slice(1) + " Mode";
-    const extra = $("extraPanel");
-    if (m === "business" || m === "learning") extra.classList.add("show");
-    else extra.classList.remove("show");
   }
 
-  /* ========== SETTINGS / DRAWER ========== */
+  /* ========== SETTINGS / GUIDE ========== */
   function openSettings() {
     $("settingsOverlay").classList.add("open");
     $("settingsDrawer").classList.add("open");
@@ -1438,6 +1333,12 @@ body {
   function closeSettings() {
     $("settingsOverlay").classList.remove("open");
     $("settingsDrawer").classList.remove("open");
+  }
+  function openGuide() {
+    $("guideModal").classList.add("open");
+  }
+  function closeGuide() {
+    $("guideModal").classList.remove("open");
   }
 
   function soundMsg(msg, isErr) {
@@ -1453,10 +1354,9 @@ body {
     t.textContent = msg;
     t.classList.add("show");
     clearTimeout(t._timer);
-    t._timer = setTimeout(() => t.classList.remove("show"), 2800);
+    t._timer = setTimeout(() => t.classList.remove("show"), 3000);
   }
 
-  /* ========== AUDIO HELPERS ========== */
   function playBeep() {
     try {
       const ctx = new (window.AudioContext || window.webkitAudioContext)();
@@ -1466,17 +1366,19 @@ body {
       o.frequency.value = 880;
       g.gain.value = 0.08;
       o.start();
-      setTimeout(() => { o.stop(); ctx.close(); }, 180);
+      setTimeout(() => { o.stop(); ctx.close(); }, 160);
       soundMsg("Beep played", false);
     } catch (e) {
-      soundMsg("Beep failed: " + e.message, true);
+      soundMsg("Beep failed", true);
     }
   }
 
   async function testVoice() {
     primeSpeech();
-    const lang = LANG[dir[1]].tts;
-    await speak(dir[1] === "ja" ? "こんにちは。音声テストです。" : "Hello. This is a voice test.", lang);
+    const sample = dir[1] === "ja"
+      ? "こんにちは。音声テストです。"
+      : "Hello. This is a voice test.";
+    await speak(sample, LANG[dir[1]].tts);
     soundMsg("Voice test finished", false);
   }
 
@@ -1491,7 +1393,7 @@ body {
       lines.push(h.trans);
       lines.push("-----------------------");
     });
-    lines.push("", "© InterpretLiveNow");
+    lines.push("", "© 2026 Rafat Kotaki. All rights reserved.");
     return lines.join("\n");
   }
 
@@ -1507,7 +1409,7 @@ body {
         return;
       }
     } catch (e) {
-      if (e && e.name === "AbortError") return;
+      if (e?.name === "AbortError") return;
     }
     const a = document.createElement("a");
     a.href = URL.createObjectURL(file);
@@ -1518,50 +1420,7 @@ body {
     toast("Saved");
   }
 
-  /* ========== ONBOARDING ========== */
-  const OB = [
-    { emoji: "🌐", title: "Welcome to InterpretLiveNow", body: "Your personal AI interpreter for natural English ↔ Japanese conversations." },
-    { emoji: "🎤", title: "Tap Record", body: "Speak naturally in your language. The app listens carefully." },
-    { emoji: "✨", title: "Translation Appears", body: "Your words are instantly translated and shown on screen." },
-    { emoji: "🔊", title: "Tap Speak", body: "Play the translation out loud for the other person." },
-    { emoji: "📱", title: "Pass the Phone", body: "Hand the phone to the other person so they can reply." },
-    { emoji: "💬", title: "Start Conversation", body: "Keep going back and forth. No tabs, no friction." }
-  ];
-  let obStep = 0;
-
-  function showOnboarding() {
-    if (store.get("onboardingComplete", false)) return;
-    $("onboarding").classList.add("open");
-    renderOb();
-  }
-  function renderOb() {
-    const s = OB[obStep];
-    $("obEmoji").textContent = s.emoji;
-    $("obTitle").textContent = s.title;
-    $("obBody").textContent = s.body;
-    const dots = $("obDots");
-    dots.innerHTML = "";
-    OB.forEach((_, i) => {
-      const d = document.createElement("div");
-      d.className = "dot" + (i === obStep ? " active" : "");
-      dots.appendChild(d);
-    });
-    $("obNext").textContent = obStep === OB.length - 1 ? "Start" : "Next";
-  }
-  function nextOb() {
-    if (obStep < OB.length - 1) {
-      obStep++;
-      renderOb();
-    } else {
-      finishOb();
-    }
-  }
-  function finishOb() {
-    store.set("onboardingComplete", true);
-    $("onboarding").classList.remove("open");
-  }
-
-  /* ========== EVENT BINDINGS ========== */
+  /* ========== BIND ========== */
   function bind() {
     $("btnRecord").onclick = () => {
       primeSpeech();
@@ -1576,6 +1435,7 @@ body {
     $("btnSpeak").onclick = async () => {
       if (!lastTranslated) return;
       primeSpeech();
+      // Always speak the translation in the target language
       await speak(lastTranslated, LANG[dir[1]].tts);
     };
 
@@ -1591,8 +1451,11 @@ body {
     };
     $("btnSave").onclick = saveChat;
     $("btnSettings").onclick = openSettings;
+    $("btnGuide").onclick = openGuide;
     $("drawerClose").onclick = closeSettings;
     $("settingsOverlay").onclick = closeSettings;
+    $("guideClose").onclick = closeGuide;
+    $("guideModal").onclick = e => { if (e.target === $("guideModal")) closeGuide(); };
 
     $("btnClearHist").onclick = () => {
       history = [];
@@ -1607,15 +1470,8 @@ body {
 
     $("testVoice").onclick = testVoice;
     $("testBeep").onclick = playBeep;
-    $("runDiag").onclick = async () => {
-      soundMsg("Running diagnostics…", false);
-      playBeep();
-      await new Promise(r => setTimeout(r, 400));
-      await testVoice();
-    };
 
     $("optAutoSpeak").onchange = e => store.set("autoSpeak", e.target.checked);
-    $("optAutoTranslate").onchange = e => store.set("autoTranslate", e.target.checked);
     $("optBypass").onchange = e => store.set("bypass", e.target.checked);
     $("apiKey").onchange = e => store.set("apiKey", e.target.value.trim());
     $("voiceEn").onchange = e => store.set("voiceEn", e.target.value);
@@ -1623,19 +1479,16 @@ body {
     $("voiceSpeed").onchange = e => store.set("speed", e.target.value);
 
     $("btnResetSettings").onclick = () => {
-      ["autoSpeak","autoTranslate","bypass","apiKey","voiceEn","voiceJa","speed","mode"].forEach(k => localStorage.removeItem("iln2_" + k));
+      ["autoSpeak","bypass","apiKey","voiceEn","voiceJa","speed","mode"].forEach(k =>
+        localStorage.removeItem("iln2_" + k)
+      );
       location.reload();
     };
-
-    $("obNext").onclick = nextOb;
-    $("obSkip").onclick = finishOb;
   }
 
   /* ========== INIT ========== */
   function init() {
-    // restore settings
     $("optAutoSpeak").checked = store.get("autoSpeak", true);
-    $("optAutoTranslate").checked = store.get("autoTranslate", true);
     $("optBypass").checked = store.get("bypass", false);
     $("apiKey").value = store.get("apiKey", "");
     const sp = store.get("speed", "1");
@@ -1643,27 +1496,26 @@ body {
 
     if (synth) {
       refreshVoices();
-      if (typeof synth.addEventListener === "function") synth.addEventListener("voiceschanged", refreshVoices);
+      if (typeof synth.addEventListener === "function")
+        synth.addEventListener("voiceschanged", refreshVoices);
       else synth.onvoiceschanged = refreshVoices;
     }
 
     setMode(mode);
+    updateLangUI();
     renderHistory();
     setState(STATE.READY);
     bind();
-    showOnboarding();
 
-    // PWA
     if ("serviceWorker" in navigator) {
       navigator.serviceWorker.register("sw.js").catch(() => {});
     }
 
-    // first interaction primes speech on iOS
+    // Prime speech on first touch (iOS requirement)
     document.body.addEventListener("touchstart", primeSpeech, { once: true, passive: true });
     document.body.addEventListener("click", primeSpeech, { once: true });
   }
 
-  // start
   if (document.readyState === "loading") {
     document.addEventListener("DOMContentLoaded", init);
   } else {
