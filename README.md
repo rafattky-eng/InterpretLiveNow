@@ -1,23 +1,60 @@
-# InterpretLiveNow V1.2.2
-Japanese ⇄ English interpreter (iPhone-first PWA). All files are in one folder.
+# InterpretLiveNow V2.0
 
-## Deploy / update GitHub Pages
-1. Upload and replace the files in the repository root.
-2. GitHub → Settings → Pages → confirm `main` and `/ (root)`.
-3. Open the site in Safari. If the old app is still cached, close the Home Screen app, open the website in Safari, refresh, then reopen the app.
+**AI Conversation Assistant · Personal Interpreter · Travel & Business Communication Tool**
 
-## Voice notes
-- On iPhone, tap **Speak** after translation. Safari may block speech started after an asynchronous network request.
-- **Test voice** checks the iPhone's built-in speech engine.
-- **Online voice** uses a network TTS endpoint and requires internet.
-- **Beep** tests basic audio output only; it does not test speech voices.
-- iPhone browser speech recognition is limited and may not work in Home Screen mode. Use the iPhone keyboard microphone as the fallback.
+## What’s New
 
-Translation services and online voice endpoints are third-party services and may change availability or usage limits.
+Complete UX redesign from a multi-tab translator into a single-page real-time conversation experience.
 
-© 2026 Rafat Kotaki. All rights reserved.
+### Core Experience
+1. Open app → see two animated people
+2. Tap **Record** → speak naturally
+3. Translation appears
+4. Tap **Speak** → play translation
+5. Hand phone to the other person
+6. Continue conversation
 
+No tabs. No navigation. Maximum 10-second learning curve.
 
-V1.1.1 audio fix: beep uses a short WAV through HTMLAudioElement and reports playback rejection instead of showing a false success. Test audio first in Safari with media volume turned up.
+## Features Preserved & Enhanced
+- English ↔ Japanese real-time translation
+- Speech recognition + speech synthesis
+- Voice selection & speed control
+- Auto-translate / Auto-speak
+- Save conversation (shareable text file)
+- Conversation history (chat bubbles)
+- Audio diagnostics & mute-switch workaround (iPhone)
+- Optional Google Translate API key
+- PWA / Add to Home Screen support
+- iPhone Safari optimized
 
-V1.2.2 speech fix: voices are cached at load (no refresh inside speak), cancel() is only used when speech is queued and followed by a 150 ms wait, the system picks the voice unless one is chosen, and Sound & settings has a guided audio diagnostic plus a mute-switch warning.
+## New in V2
+- Single-page conversation flow
+- Animated avatars with state feedback (listening / processing / speaking)
+- Live status bar + guided finger pointer
+- Modern glassmorphism + floating action buttons
+- Tourist / Business / Learning modes
+- Onboarding tutorial (shown once)
+- Settings drawer
+- Clean messaging-style history
+
+## How to Deploy
+Just upload the entire folder to any static host (GitHub Pages, Netlify, Cloudflare Pages, etc.).
+
+```
+InterpretLiveNow-V2/
+├── index.html          ← complete app (HTML + CSS + JS)
+├── manifest.webmanifest
+├── sw.js
+├── favicon-32.png
+├── icon-*.png
+└── maskable-512.png
+```
+
+## Local Testing
+Open `index.html` in Safari (best for iPhone testing) or Chrome.
+
+Note: Speech recognition works best in Safari on iOS (not in standalone PWA on some iOS versions).
+
+## Credits
+Redesigned from InterpretLiveNow V1.2.2 following the V2 product specification.
