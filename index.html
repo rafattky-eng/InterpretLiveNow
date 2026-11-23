@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, maximum-scale=1">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>InterpretLiveNow</title>
 <meta name="description" content="AI Conversation Assistant · Personal Interpreter · English ↔ Japanese">
 <meta name="theme-color" content="#0B1A2E">
@@ -12,7 +12,7 @@
 <meta name="mobile-web-app-capable" content="yes">
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="icon" href="favicon-32.png" sizes="32x32">
-<link rel="apple-touch-icon" href="icon-180.png">
+<link rel="icon" href="icon-192.png" sizes="192x192">
 <link rel="apple-touch-icon" sizes="152x152" href="icon-152.png">
 <link rel="apple-touch-icon" sizes="167x167" href="icon-167.png">
 <link rel="apple-touch-icon" sizes="180x180" href="icon-180.png">
@@ -27,6 +27,7 @@
   --safe-top: env(safe-area-inset-top, 0px);
   --safe-bottom: env(safe-area-inset-bottom, 0px);
 }
+button { touch-action: manipulation; }
 * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
 html, body { height: 100%; }
 body {
@@ -45,12 +46,8 @@ body {
   padding: calc(10px + var(--safe-top)) 14px 10px;
   display: flex; align-items: center; gap: 10px;
 }
-.logo {
-  width: 40px; height: 40px; border-radius: 11px;
-  background: linear-gradient(145deg, #1A3150, #0B1A2E);
-  border: 1.5px solid var(--gold); display: grid; place-items: center; flex-shrink: 0;
-}
-.logo svg { width: 24px; height: 24px; }
+.logo { width: 46px; height: 46px; flex-shrink: 0; display: block; filter: drop-shadow(0 2px 8px rgba(59,130,246,0.35)); }
+.logo img { width: 100%; height: 100%; display: block; border-radius: 12px; }
 .brand { flex: 1; min-width: 0; }
 .brand h1 { font-size: 1.08rem; font-weight: 800; letter-spacing: -0.02em; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .brand p { font-size: 0.66rem; color: var(--gold); font-weight: 600; margin-top: 1px; }
@@ -298,7 +295,7 @@ body {
 }
 @keyframes fadeUp { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
 @supports (-webkit-touch-callout: none) {
-  .fab { -webkit-user-select: none; user-select: none; }
+  .fab { -webkit-user-select: none; user-select: none; -webkit-touch-callout: none; touch-action: manipulation; }
   body { overscroll-behavior-y: none; }
 }
 </style>
@@ -306,17 +303,15 @@ body {
 <body>
 <div class="app" id="app">
   <header class="header">
-    <div class="logo">
-      <svg viewBox="0 0 32 32" fill="none"><circle cx="16" cy="16" r="13" stroke="#D4B36A" stroke-width="2"/><ellipse cx="16" cy="16" rx="6" ry="13" stroke="#D4B36A" stroke-width="1.4"/><path d="M3 16h26M5 10h22M5 22h22" stroke="#D4B36A" stroke-width="1.2"/><circle cx="16" cy="16" r="2.2" fill="#D4B36A"/></svg>
-    </div>
+    <div class="logo"><img src="logo-160.png" alt="InterpretLiveNow logo" width="46" height="46"></div>
     <div class="brand">
       <h1>InterpretLiveNow</h1>
       <p>Speak · Translate · Understand</p>
     </div>
     <div class="header-right">
-      <button class="lang-btn active" id="btnEN" type="button">EN</button>
-      <button class="lang-btn" id="btnJP" type="button">JP</button>
-      <button class="icon-btn" id="btnNew" title="New conversation">↺</button>
+      <button class="lang-btn active" id="btnEN" type="button" aria-label="I speak English">EN</button>
+      <button class="lang-btn" id="btnJP" type="button" aria-label="I speak Japanese">JP</button>
+      <button class="icon-btn" id="btnNew" type="button" title="New conversation" aria-label="New conversation">↺</button>
     </div>
   </header>
 
@@ -331,7 +326,7 @@ body {
     <div class="avatars">
       <div class="avatar left" id="avatarLeft">👨<div class="label" id="labelLeft">English</div></div>
       <div class="wave-center" id="waveCenter"><div class="waves"></div><div class="waves"></div>⇄</div>
-      <div class="avatar right" id="avatarRight">👩<div class="label" id="labelRight">日本語</div></div>
+      <div class="avatar right" id="avatarRight">👩<div class="label" id="labelRight">Japanese</div></div>
     </div>
 
     <div class="guide" id="guide">
@@ -361,7 +356,7 @@ body {
 
     <div class="actions">
       <button class="fab record" id="btnRecord" type="button">🎤<span id="recordLabel">Record</span></button>
-      <button class="fab speak" id="btnSpeak" type="button" disabled>🔊<span>Speak</span></button>
+      <button class="fab speak" id="btnSpeak" type="button" disabled>🔊<span id="speakLabel">Speak</span></button>
     </div>
 
     <div class="history-section">
@@ -373,7 +368,7 @@ body {
         </div>
       </div>
       <div class="history-list" id="historyList">
-        <div class="empty-hist" id="emptyHist">No messages yet</div>
+        <div class="empty-hist" id="emptyHist"><img src="logo-160.png" alt="" width="44" height="44" style="border-radius:11px;opacity:.85;display:block;margin:0 auto 6px;">No messages yet</div>
       </div>
     </div>
 
@@ -385,7 +380,7 @@ body {
 
   <footer class="footer">
     © 2026 Rafat Kotaki. All rights reserved.<br>
-    <strong>InterpretLiveNow</strong> · V2.1.0
+    <strong>InterpretLiveNow</strong> · V2.2.0
   </footer>
 </div>
 
@@ -426,7 +421,7 @@ body {
 
 <div class="guide-modal" id="guideModal">
   <div class="guide-card">
-    <div class="emoji">🌐</div>
+    <img src="logo-160.png" alt="" width="72" height="72" style="border-radius:16px;margin-bottom:10px;">
     <h2>How to use</h2>
     <p>Talk with anyone in English or Japanese.</p>
     <ul class="guide-steps">
@@ -454,9 +449,9 @@ body {
   const standalone = window.matchMedia("(display-mode: standalone)").matches || !!navigator.standalone;
   const LANG = {
     en: { name: "English", tts: "en-US", sr: "en-US", short: "en", emoji: "👨" },
-    ja: { name: "日本語", tts: "ja-JP", sr: "ja-JP", short: "ja", emoji: "👩" }
+    ja: { name: "Japanese", tts: "ja-JP", sr: "ja-JP", short: "ja", emoji: "👩" }
   };
-  let dir = ["en", "ja"], state = "ready", lastOriginal = "", lastTranslated = "";
+  let dir = ["en", "ja"], state = "ready", lastOriginal = "", lastTranslated = "", lastLang = "ja-JP";
   let history = store.get("history", []), recognition = null, speechToken = 0, primed = false;
   const synth = window.speechSynthesis || null;
   let cachedVoices = [];
@@ -481,92 +476,188 @@ body {
         sel.appendChild(opt);
       });
     };
-    add(enSel, cachedVoices.filter(v => v.lang.startsWith("en")), prevEn);
-    add(jaSel, cachedVoices.filter(v => v.lang.startsWith("ja")), prevJa);
+    add(enSel, cachedVoices.filter(v => /^en/i.test(v.lang)), prevEn);
+    add(jaSel, cachedVoices.filter(v => /^ja/i.test(v.lang)), prevJa);
   }
   function pickVoice(lang) {
     const key = lang.startsWith("en") ? "voiceEn" : "voiceJa";
     const name = store.get(key, "");
     if (name) { const v = cachedVoices.find(x => x.name === name); if (v) return v; }
-    const list = cachedVoices.filter(v => v.lang.startsWith(lang.slice(0, 2)));
-    return list.find(v => v.localService) || list[0] || null;
+    const norm = v => v.lang.replace("_", "-").toLowerCase();
+    const list = cachedVoices.filter(v => norm(v).startsWith(lang.slice(0, 2).toLowerCase()));
+    return list.find(v => norm(v) === lang.toLowerCase() && v.localService) || list.find(v => norm(v) === lang.toLowerCase()) || list.find(v => v.localService) || list[0] || null;
   }
-  function stopSpeech() {
-    speechToken++;
-    try { if (synth && (synth.speaking || synth.pending)) synth.cancel(); } catch {}
+  // ---------- iPhone-safe audio ----------
+  // iOS needs: (1) speech started from a tap, (2) audio session in "playback" mode
+  // (so it plays over the silent switch and after the mic was used), (3) no instant cancel()->speak().
+  let silentEl = null, audioUnlocked = false;
+  function makeSilentWav() {
+    const sr = 8000, n = sr, buf = new ArrayBuffer(44 + n), v = new DataView(buf);
+    const w = (o, t) => { for (let i = 0; i < t.length; i++) v.setUint8(o + i, t.charCodeAt(i)); };
+    w(0, "RIFF"); v.setUint32(4, 36 + n, true); w(8, "WAVEfmt "); v.setUint32(16, 16, true);
+    v.setUint16(20, 1, true); v.setUint16(22, 1, true); v.setUint32(24, sr, true); v.setUint32(28, sr, true);
+    v.setUint16(32, 1, true); v.setUint16(34, 8, true); w(36, "data"); v.setUint32(40, n, true);
+    new Uint8Array(buf, 44).fill(128);
+    return URL.createObjectURL(new Blob([buf], { type: "audio/wav" }));
+  }
+  function setPlaybackSession() {
+    try { if (navigator.audioSession) navigator.audioSession.type = "playback"; } catch {}
+  }
+  function unlockAudio() {           // call from inside a tap
+    setPlaybackSession();
+    if (!silentEl) {
+      try { silentEl = new Audio(makeSilentWav()); silentEl.loop = true; silentEl.preload = "auto"; silentEl.setAttribute("playsinline", ""); } catch { silentEl = null; }
+    }
+    if (silentEl && !audioUnlocked) {
+      const p = silentEl.play();
+      if (p && p.then) p.then(() => { audioUnlocked = true; silentEl.pause(); }).catch(() => {});
+    }
+    primeSpeech();
+  }
+  function keepSessionAlive(on) {    // holds iOS in playback mode (ignores mute switch) only while speaking
+    if (!silentEl || !(isIOS && store.get("bypass", true))) return;
+    try { if (on) { setPlaybackSession(); const p = silentEl.play(); if (p && p.catch) p.catch(() => {}); } else silentEl.pause(); } catch {}
   }
   function primeSpeech() {
     if (primed || !synth || typeof SpeechSynthesisUtterance === "undefined") return;
     primed = true;
     try { const u = new SpeechSynthesisUtterance(" "); u.volume = 0; synth.speak(u); } catch {}
   }
-  function speak(text, langCode) {
-    return new Promise(resolve => {
-      if (!synth || !text) { resolve(); return; }
-      stopSpeech();
-      const my = speechToken;
-      const utter = new SpeechSynthesisUtterance(text);
-      utter.lang = langCode;
-      utter.rate = parseFloat($("voiceSpeed")?.value || 1);
-      const voice = pickVoice(langCode);
-      if (voice) utter.voice = voice;
-      if (store.get("bypass", false) && isIOS) {
-        try {
-          const ctx = new (window.AudioContext || window.webkitAudioContext)();
-          const osc = ctx.createOscillator();
-          osc.frequency.value = 0.01; osc.connect(ctx.destination); osc.start();
-          setTimeout(() => { try { osc.stop(); ctx.close(); } catch {} }, 40);
-        } catch {}
-      }
-      utter.onstart = () => { if (my === speechToken) setState("speaking"); };
-      utter.onend = () => { if (my === speechToken) { setState("waiting"); resolve(); } };
-      utter.onerror = () => { if (my === speechToken) { setState("ready_to_speak"); resolve(); } };
-      try { if (synth.paused) synth.resume(); synth.speak(utter); } catch { resolve(); }
+  function stopSpeech() {
+    speechToken++;
+    try { if (synth && (synth.speaking || synth.pending)) synth.cancel(); } catch {}
+    keepSessionAlive(false);
+  }
+  const keepRefs = [];               // prevents Safari from garbage-collecting utterances mid-speech
+  function chunkText(t) {
+    const parts = t.replace(/\s+/g, " ").trim().match(/[^.!?。！？\n]+[.!?。！？]*/g) || [t];
+    const out = []; let cur = "";
+    parts.forEach(p => {
+      if ((cur + p).length > 160 && cur) { out.push(cur.trim()); cur = p; } else cur += p;
     });
+    if (cur.trim()) out.push(cur.trim());
+    return out;
+  }
+  function speakChunk(text, langCode, my, isRetry) {
+    return new Promise(resolve => {
+      const u = new SpeechSynthesisUtterance(text);
+      keepRefs.push(u); if (keepRefs.length > 12) keepRefs.shift();
+      u.lang = langCode;
+      u.rate = parseFloat($("voiceSpeed")?.value || 1);
+      u.volume = 1;
+      const voice = pickVoice(langCode);
+      if (voice) { u.voice = voice; u.lang = voice.lang.replace("_", "-"); }
+      let started = false, done = false, poll = null, watchdog = null;
+      const finish = ok => {
+        if (done) return; done = true;
+        clearInterval(poll); clearTimeout(watchdog); resolve(ok);
+      };
+      u.onstart = () => {
+        started = true;
+        if (my === speechToken) setState("speaking");
+        poll = setInterval(() => {   // iOS sometimes never fires onend
+          if (my !== speechToken || (!synth.speaking && !synth.pending)) finish(true);
+        }, 500);
+      };
+      u.onend = () => finish(true);
+      u.onerror = e => finish(e && (e.error === "interrupted" || e.error === "canceled"));
+      watchdog = setTimeout(() => {
+        if (started || done || my !== speechToken) return;
+        if (synth.speaking) return;
+        try { synth.cancel(); } catch {}
+        if (!isRetry) { setTimeout(() => speakChunk(text, langCode, my, true).then(finish)); done = true; clearInterval(poll); }
+        else finish(false);
+      }, 2500);
+      try { if (synth.paused) synth.resume(); synth.speak(u); } catch { finish(false); }
+    });
+  }
+  async function speak(text, langCode) {
+    if (!synth || !text || typeof SpeechSynthesisUtterance === "undefined") { toast("Speech is not supported on this browser"); return; }
+    unlockAudio();
+    const wasBusy = synth.speaking || synth.pending;
+    stopSpeech();
+    const my = speechToken;
+    if (wasBusy || isIOS) await new Promise(r => setTimeout(r, 160)); // iOS drops speak() right after cancel()
+    if (my !== speechToken) return;
+    keepSessionAlive(true);
+    setState("speaking");
+    const hasVoice = !!pickVoice(langCode);
+    let allOk = true;
+    for (const c of chunkText(text)) {
+      if (my !== speechToken) return;
+      const ok = await speakChunk(c, langCode, my, false);
+      if (!ok) { allOk = false; break; }
+    }
+    if (my !== speechToken) return;
+    keepSessionAlive(false);
+    setState(lastTranslated ? "waiting" : "ready");
+    if (!allOk) {
+      toast(hasVoice || !langCode.startsWith("ja") ? "No sound? Turn volume up and check the silent switch" :
+        "Japanese voice missing: iPhone Settings › Accessibility › Spoken Content › Voices › Japanese");
+    }
   }
 
   const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
   const canSR = !!SR && !(isIOS && standalone);
 
+  let srTimer = null;
   function startListening() {
     if (!canSR) {
       toast(isIOS && standalone ? "On iPhone home-screen app, use Type/Paste or open in Safari" : "Speech recognition not available");
       return;
     }
-    primeSpeech(); stopSpeech();
+    unlockAudio(); stopSpeech();
     if (recognition) { try { recognition.abort(); } catch {} }
     recognition = new SR();
-    recognition.lang = LANG[dir[0]].sr;
-    recognition.interimResults = false;
-    recognition.continuous = false;
-    recognition.maxAlternatives = 1;
-    recognition.onstart = () => setState("listening");
-    recognition.onresult = async ev => {
-      const text = (ev.results[0]?.[0]?.transcript || "").trim();
-      if (!text) { setState("ready"); toast("Didn't catch that"); return; }
-      lastOriginal = text;
-      $("textInput").value = text;
-      setState("translating");
-      await doTranslate(text);
+    const rec = recognition; let finalText = "", gotResult = false;
+    rec.lang = LANG[dir[0]].sr;
+    rec.interimResults = true;
+    rec.continuous = false;
+    rec.maxAlternatives = 1;
+    rec.onstart = () => setState("listening");
+    rec.onresult = ev => {
+      let interim = "";
+      for (let i = ev.resultIndex; i < ev.results.length; i++) {
+        const r = ev.results[i];
+        if (r.isFinal) finalText += r[0].transcript; else interim += r[0].transcript;
+      }
+      gotResult = true;
+      $("textInput").value = (finalText + interim).trim();
     };
-    recognition.onerror = e => {
+    rec.onerror = e => {
+      clearTimeout(srTimer);
       if (e.error === "aborted" || e.error === "no-speech") {
         setState("ready");
         if (e.error === "no-speech") toast("No speech detected");
         return;
       }
       setState("error");
-      toast("Mic error: " + e.error);
+      toast(e.error === "not-allowed" || e.error === "service-not-allowed" ? "Microphone blocked — allow it in Settings › Safari" : "Mic error: " + e.error);
       setTimeout(() => setState("ready"), 1800);
     };
-    recognition.onend = () => { if (state === "listening") setState("ready"); };
-    try { recognition.start(); } catch { toast("Could not start microphone"); setState("ready"); }
+    rec.onend = async () => {
+      clearTimeout(srTimer);
+      if (rec !== recognition) return;
+      const text = (finalText || $("textInput").value).trim();
+      if (state !== "listening" && state !== "processing") return;
+      if (!gotResult || !text) { setState("ready"); toast("Didn't catch that"); return; }
+      lastOriginal = text;
+      await new Promise(r => setTimeout(r, isIOS ? 250 : 0)); // let iOS release the mic before playback
+      await doTranslate(text);
+    };
+    try { rec.start(); } catch { toast("Could not start microphone"); setState("ready"); }
   }
-  function stopListening() { if (recognition) { try { recognition.stop(); } catch {} } }
+  function stopListening() {
+    if (!recognition) return;
+    setState("processing");
+    try { recognition.stop(); } catch {}
+    clearTimeout(srTimer);
+    srTimer = setTimeout(() => { if (state === "processing") { try { recognition.abort(); } catch {} setState("ready"); } }, 6000);
+  }
 
   async function ftch(url, opts) {
     const c = new AbortController();
-    const t = setTimeout(() => c.abort(), 12000);
+    const t = setTimeout(() => c.abort(), opts && opts.ms || 7000);
     try { return await fetch(url, Object.assign({ signal: c.signal }, opts || {})); }
     finally { clearTimeout(t); }
   }
@@ -593,30 +684,36 @@ body {
     if (!t || t === q) throw new Error("Empty");
     return t;
   }
+  const tcache = new Map();
   async function translate(text, from, to) {
+    const ck = from + to + text;
+    if (tcache.has(ck)) return tcache.get(ck);
     const key = ($("apiKey")?.value || store.get("apiKey", "")).trim();
-    if (key) { try { return await translateViaGoogleKey(text, from, to, key); } catch {} }
-    try { return await translateViaGTX(text, from, to); } catch {}
-    try { return await translateViaMyMemory(text, from, to); } catch {}
-    throw new Error("Translation failed");
+    let out = null;
+    if (key) { try { out = await translateViaGoogleKey(text, from, to, key); } catch {} }
+    if (!out) { try { out = await translateViaGTX(text, from, to); } catch {} }
+    if (!out) { try { out = await translateViaMyMemory(text, from, to); } catch {} }
+    if (!out) throw new Error("Translation failed");
+    tcache.set(ck, out); if (tcache.size > 60) tcache.delete(tcache.keys().next().value);
+    return out;
   }
   async function doTranslate(text) {
     setState("translating");
     $("origText").textContent = text;
     $("transText").textContent = "…";
     $("transCard").classList.add("show");
+    const outLang = LANG[dir[1]].tts;
     try {
       const out = await translate(text, LANG[dir[0]].short, LANG[dir[1]].short);
-      lastTranslated = out;
+      lastTranslated = out; lastLang = outLang;
       $("transText").textContent = out;
       addToHistory(text, out, dir[0], dir[1]);
       setState("ready_to_speak");
-      $("btnSpeak").disabled = false;
-      if (store.get("autoSpeak", true)) await speak(out, LANG[dir[1]].tts);
+      if (store.get("autoSpeak", true)) await speak(out, outLang);
     } catch (e) {
       $("transText").textContent = "Translation failed";
       setState("error");
-      toast(navigator.onLine ? "Translation failed" : "Offline");
+      toast(navigator.onLine ? "Translation failed — try again" : "You are offline");
       setTimeout(() => setState("ready"), 2000);
     }
   }
@@ -652,11 +749,14 @@ body {
     left.className = "avatar left"; right.className = "avatar right";
     wave.classList.remove("active"); rec.classList.remove("listening");
     rec.disabled = false;
-    spk.disabled = !(lastTranslated && (s === "ready_to_speak" || s === "waiting" || s === "speaking"));
+    const speaking = s === "speaking";
+    spk.disabled = !(speaking || (s !== "translating" && s !== "listening" && s !== "processing" && (lastTranslated || ($("textInput").value || "").trim())));
+    $("speakLabel").textContent = speaking ? "Stop" : "Speak";
     recLabel.textContent = "Record";
     const map = {
       ready: { status: "Ready", icon: "👉", text: "Tap Record or type text" },
       listening: { status: "Listening…", icon: "🎤", text: "Speak now — tap Stop when done", left: "listening", bar: "listening", guideCls: "listening", recCls: "listening", label: "Stop" },
+      processing: { status: "Processing…", icon: "⏳", text: "Finishing up…", left: "listening", bar: "translating" },
       translating: { status: "Translating…", icon: "⏳", text: "Translating…", left: "listening", right: "listening", bar: "translating", wave: true },
       ready_to_speak: { status: "Ready to Speak", icon: "👉", text: "Tap Speak to play the translation" },
       speaking: { status: "Speaking…", icon: "🔊", text: "Playing translation — hand phone over", right: "speaking", bar: "speaking", guideCls: "speaking" },
@@ -684,14 +784,14 @@ body {
     } else {
       dir = ["ja", "en"];
       $("btnJP").classList.add("active"); $("btnEN").classList.remove("active");
-      $("direction").innerHTML = '日本語 <span>→</span> English';
+      $("direction").innerHTML = 'Japanese <span>→</span> English';
     }
     $("labelLeft").textContent = LANG[dir[0]].name;
     $("labelRight").textContent = LANG[dir[1]].name;
     $("avatarLeft").childNodes[0].textContent = LANG[dir[0]].emoji;
     $("avatarRight").childNodes[0].textContent = LANG[dir[1]].emoji;
     $("origLabel").textContent = LANG[dir[0]].name;
-    toast("Speaking " + LANG[dir[0]].name);
+    if (inited) toast("Speaking " + LANG[dir[0]].name);
   }
 
   function toast(msg) {
@@ -711,7 +811,7 @@ body {
     } catch { soundMsg("Beep failed", true); }
   }
   async function testVoice() {
-    primeSpeech();
+    unlockAudio();
     const sample = dir[1] === "ja" ? "こんにちは。音声テストです。" : "Hello. This is a voice test.";
     await speak(sample, LANG[dir[1]].tts); soundMsg("Voice test finished");
   }
@@ -747,15 +847,19 @@ body {
 
   function bind() {
     $("btnRecord").onclick = () => {
-      primeSpeech();
-      if (state === "listening") { stopListening(); setState("ready"); }
+      unlockAudio();
+      if (state === "listening") stopListening();
       else startListening();
     };
     $("btnSpeak").onclick = async () => {
+      unlockAudio();                       // must happen inside this tap for iPhone
+      if (state === "speaking") { stopSpeech(); setState("waiting"); return; }
+      const typed = $("textInput").value.trim();
+      if (typed && typed !== lastOriginal) { lastOriginal = typed; await doTranslate(typed); return; } // translate new text, auto-speaks
       if (!lastTranslated) return;
-      primeSpeech();
-      await speak(lastTranslated, LANG[dir[1]].tts);
+      await speak(lastTranslated, lastLang);
     };
+    $("textInput").addEventListener("input", () => { if (state !== "speaking") setState(state); });
     $("btnEN").onclick = () => setDirection("en");
     $("btnJP").onclick = () => setDirection("ja");
     $("btnNew").onclick = () => {
@@ -763,7 +867,6 @@ body {
       lastOriginal = lastTranslated = "";
       $("transCard").classList.remove("show");
       $("textInput").value = "";
-      $("btnSpeak").disabled = true;
       setState("ready"); toast("New conversation");
     };
     $("btnSave").onclick = saveChat;
@@ -789,7 +892,7 @@ body {
     $("btnTranslateText").onclick = async () => {
       const text = $("textInput").value.trim();
       if (!text) { toast("Type or paste some text first"); return; }
-      primeSpeech(); lastOriginal = text; await doTranslate(text);
+      unlockAudio(); lastOriginal = text; await doTranslate(text);
     };
     $("testVoice").onclick = testVoice;
     $("testBeep").onclick = playBeep;
@@ -805,9 +908,10 @@ body {
     };
   }
 
+  let inited = false;
   function init() {
     $("optAutoSpeak").checked = store.get("autoSpeak", true);
-    $("optBypass").checked = store.get("bypass", false);
+    $("optBypass").checked = store.get("bypass", true);
     $("apiKey").value = store.get("apiKey", "");
     const sp = store.get("speed", "1");
     if ($("voiceSpeed")) $("voiceSpeed").value = sp;
@@ -819,10 +923,10 @@ body {
     setDirection("en");
     renderHistory();
     setState("ready");
-    bind();
+    bind(); inited = true;
     if ("serviceWorker" in navigator) navigator.serviceWorker.register("sw.js").catch(() => {});
-    document.body.addEventListener("touchstart", primeSpeech, { once: true, passive: true });
-    document.body.addEventListener("click", primeSpeech, { once: true });
+    document.body.addEventListener("touchend", unlockAudio, { once: true, passive: true });
+    document.body.addEventListener("click", unlockAudio, { once: true });
   }
   if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", init);
   else init();

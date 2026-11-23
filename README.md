@@ -1,6 +1,13 @@
-# InterpretLiveNow V2.0
+# InterpretLiveNow V2.2.0
 
 **AI Conversation Assistant · Personal Interpreter · Travel & Business Communication Tool**
+
+## V2.2.0 Changes
+- New neon logo used everywhere (header, help, favicon, Home Screen icons)
+- "日本語" label replaced with "Japanese"
+- iPhone Speak button rebuilt: plays inside the tap, plays over the silent switch, works after the mic, long text split into chunks, auto-retry, Speak toggles to Stop
+- Live text while talking, faster translation (shorter timeouts + cache), Speak can translate typed text
+- Service worker now updates automatically (no stale versions)
 
 ## What’s New
 
