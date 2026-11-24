@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, user-scalable=yes">
 <title>InterpretLiveNow</title>
 <meta name="description" content="AI Conversation Assistant · Personal Interpreter · English ↔ Japanese">
 <meta name="theme-color" content="#0B1A2E">
@@ -16,6 +16,8 @@
 <link rel="apple-touch-icon" sizes="152x152" href="icon-152.png">
 <link rel="apple-touch-icon" sizes="167x167" href="icon-167.png">
 <link rel="apple-touch-icon" sizes="180x180" href="icon-180.png">
+<link rel="preconnect" href="https://translation.googleapis.com">
+<link rel="preconnect" href="https://api.mymemory.translated.net">
 <style>
 :root {
   --navy: #0B1A2E; --navy2: #12253F; --navy3: #1A3150;
@@ -41,10 +43,17 @@ body {
 }
 .header {
   position: sticky; top: 0; z-index: 50;
-  background: rgba(11,26,46,0.94); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px);
+  background: rgba(11,26,46,0.98);
   border-bottom: 1px solid var(--line);
   padding: calc(10px + var(--safe-top)) 14px 10px;
   display: flex; align-items: center; gap: 10px;
+}
+@supports not (-webkit-touch-callout: none) {
+  .header {
+    background: rgba(11,26,46,0.94);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+  }
 }
 .logo { width: 46px; height: 46px; flex-shrink: 0; display: block; filter: drop-shadow(0 2px 8px rgba(59,130,246,0.35)); }
 .logo img { width: 100%; height: 100%; display: block; border-radius: 12px; }
@@ -76,9 +85,29 @@ body {
 .status-bar.listening .status-dot { background: var(--danger); box-shadow: 0 0 0 3px rgba(255,90,95,0.3); }
 .status-bar.translating .status-dot { background: var(--blue); }
 .status-bar.speaking .status-dot { background: var(--gold); }
+.safari-banner {
+  display: none; margin: 0 14px 6px; padding: 12px 14px; border-radius: 14px;
+  background: linear-gradient(135deg, #1A3150, #12253F); border: 1.5px solid var(--gold);
+  color: var(--ink); font-size: 0.88rem; font-weight: 700; text-align: center;
+  cursor: pointer; line-height: 1.35; box-shadow: 0 4px 16px rgba(0,0,0,0.3);
+}
+.safari-banner.show { display: block; }
+.safari-banner span { color: var(--gold); }
+.trans-error {
+  margin-top: 8px; padding: 10px 12px; border-radius: 12px;
+  background: rgba(255,90,95,0.12); border: 1px solid rgba(255,90,95,0.35);
+  color: #FFB4B6; font-size: 0.85rem; font-weight: 600; display: none;
+  align-items: center; justify-content: space-between; gap: 10px;
+}
+.trans-error.show { display: flex; }
+.trans-error button {
+  flex-shrink: 0; padding: 6px 12px; border-radius: 8px; border: none;
+  background: var(--gold); color: #0B1A2E; font-weight: 800; font-size: 0.8rem; cursor: pointer;
+}
 .main {
   flex: 1; display: flex; flex-direction: column; padding: 4px 14px 10px; gap: 11px;
   overflow-y: auto; -webkit-overflow-scrolling: touch;
+  overscroll-behavior: contain;
 }
 .direction {
   text-align: center; font-size: 0.9rem; font-weight: 700; color: var(--gold);
@@ -92,11 +121,8 @@ body {
   position: relative; width: 72px; height: 72px; border-radius: 50%;
   background: var(--navy2); border: 2.5px solid var(--line);
   display: grid; place-items: center; font-size: 2.1rem;
-  box-shadow: 0 6px 20px rgba(0,0,0,0.35); transition: all 0.25s;
-  animation: float 4s ease-in-out infinite;
+  box-shadow: 0 6px 20px rgba(0,0,0,0.35); transition: border-color 0.2s, box-shadow 0.2s, opacity 0.2s;
 }
-.avatar.left { animation-delay: 0s; }
-.avatar.right { animation-delay: 1s; }
 .avatar .label {
   position: absolute; bottom: -18px; left: 50%; transform: translateX(-50%);
   font-size: 0.62rem; font-weight: 700; color: var(--mute); white-space: nowrap;
@@ -105,12 +131,12 @@ body {
 .avatar.listening {
   border-color: var(--blue);
   box-shadow: 0 0 0 5px rgba(59,130,246,0.25), 0 6px 20px rgba(0,0,0,0.35);
-  animation: pulse-avatar 1.1s ease-in-out infinite;
+  opacity: 1;
 }
 .avatar.speaking {
   border-color: var(--gold);
   box-shadow: 0 0 0 5px rgba(212,179,106,0.28), 0 6px 20px rgba(0,0,0,0.35);
-  animation: pulse-avatar 0.75s ease-in-out infinite;
+  opacity: 1;
 }
 .wave-center {
   width: 36px; height: 36px; display: grid; place-items: center;
@@ -169,7 +195,11 @@ body {
 .fab.record { background: linear-gradient(145deg, #3B82F6, #2563EB); color: white; }
 .fab.record.listening {
   background: linear-gradient(145deg, #EF4444, #DC2626);
-  animation: pulse-ring 1.1s ease-out infinite;
+  opacity: 0.95;
+}
+.fab.record.safari-mode {
+  background: linear-gradient(145deg, #64748B, #475569);
+  opacity: 0.85;
 }
 .fab.speak { background: linear-gradient(145deg, var(--gold), #C9A04E); color: #0B1A2E; }
 .fab:disabled { opacity: 0.38; cursor: not-allowed; box-shadow: 0 4px 12px rgba(0,0,0,0.25); }
@@ -296,7 +326,6 @@ body {
 @keyframes fadeUp { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
 @supports (-webkit-touch-callout: none) {
   .fab { -webkit-user-select: none; user-select: none; -webkit-touch-callout: none; touch-action: manipulation; }
-  body { overscroll-behavior-y: none; }
 }
 </style>
 </head>
@@ -318,6 +347,10 @@ body {
   <div class="status-bar" id="statusBar">
     <div class="status-dot"></div>
     <span id="statusText">Ready</span>
+  </div>
+
+  <div class="safari-banner" id="safariBanner" role="button" tabindex="0">
+    Voice input requires Safari. <span>Tap here to copy the link and open in Safari.</span>
   </div>
 
   <main class="main">
@@ -342,6 +375,10 @@ body {
       <div class="trans-row">
         <div class="trans-label">Translation</div>
         <div class="trans-text" id="transText"></div>
+      </div>
+      <div class="trans-error" id="transError">
+        <span id="transErrorMsg">Translation failed</span>
+        <button type="button" id="btnRetryTranslate">Retry</button>
       </div>
     </div>
 
@@ -380,7 +417,7 @@ body {
 
   <footer class="footer">
     © 2026 Rafat Kotaki. All rights reserved.<br>
-    <strong>InterpretLiveNow</strong> · V2.2.0
+    <strong>InterpretLiveNow</strong> · V2.3.0
   </footer>
 </div>
 
@@ -590,6 +627,8 @@ body {
     }
     if (my !== speechToken) return;
     keepSessionAlive(false);
+    // iOS WebKit: mic often hangs right after TTS — short cooldown before next Record
+    recordCooldownUntil = Date.now() + 300;
     setState(lastTranslated ? "waiting" : "ready");
     if (!allOk) {
       toast(hasVoice || !langCode.startsWith("ja") ? "No sound? Turn volume up and check the silent switch" :
@@ -599,22 +638,63 @@ body {
 
   const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
   const canSR = !!SR && !(isIOS && standalone);
-
+  let recordCooldownUntil = 0;
   let srTimer = null;
-  function startListening() {
+  let srNoResultTimer = null;
+  let srRetryUsed = false;
+
+  function applyStandaloneMicUI() {
+    if (!(isIOS && standalone)) return;
+    const rec = $("btnRecord");
+    const label = $("recordLabel");
+    if (rec) {
+      rec.disabled = true;
+      rec.classList.add("safari-mode");
+    }
+    if (label) label.textContent = "Safari";
+    const banner = $("safariBanner");
+    if (banner) banner.classList.add("show");
+  }
+
+  function startListening(isRetry) {
+    if (isIOS && standalone) {
+      applyStandaloneMicUI();
+      return;
+    }
     if (!canSR) {
-      toast(isIOS && standalone ? "On iPhone home-screen app, use Type/Paste or open in Safari" : "Speech recognition not available");
+      toast("Speech recognition not available");
+      return;
+    }
+    if (Date.now() < recordCooldownUntil) {
+      toast("Wait a moment…");
       return;
     }
     unlockAudio(); stopSpeech();
     if (recognition) { try { recognition.abort(); } catch {} }
+    clearTimeout(srNoResultTimer);
     recognition = new SR();
     const rec = recognition; let finalText = "", gotResult = false;
     rec.lang = LANG[dir[0]].sr;
     rec.interimResults = true;
     rec.continuous = false;
     rec.maxAlternatives = 1;
-    rec.onstart = () => setState("listening");
+    rec.onstart = () => {
+      setState("listening");
+      clearTimeout(srNoResultTimer);
+      srNoResultTimer = setTimeout(() => {
+        if (rec !== recognition || gotResult) return;
+        try { recognition.abort(); } catch {}
+        if (!srRetryUsed) {
+          srRetryUsed = true;
+          toast("No result — retrying…");
+          setTimeout(() => startListening(true), 1000);
+        } else {
+          setState("ready");
+          toast("Didn't catch that");
+          srRetryUsed = false;
+        }
+      }, 4000);
+    };
     rec.onresult = ev => {
       let interim = "";
       for (let i = ev.resultIndex; i < ev.results.length; i++) {
@@ -622,10 +702,11 @@ body {
         if (r.isFinal) finalText += r[0].transcript; else interim += r[0].transcript;
       }
       gotResult = true;
+      clearTimeout(srNoResultTimer);
       $("textInput").value = (finalText + interim).trim();
     };
     rec.onerror = e => {
-      clearTimeout(srTimer);
+      clearTimeout(srTimer); clearTimeout(srNoResultTimer);
       if (e.error === "aborted" || e.error === "no-speech") {
         setState("ready");
         if (e.error === "no-speech") toast("No speech detected");
@@ -636,13 +717,21 @@ body {
       setTimeout(() => setState("ready"), 1800);
     };
     rec.onend = async () => {
-      clearTimeout(srTimer);
+      clearTimeout(srTimer); clearTimeout(srNoResultTimer);
       if (rec !== recognition) return;
       const text = (finalText || $("textInput").value).trim();
       if (state !== "listening" && state !== "processing") return;
-      if (!gotResult || !text) { setState("ready"); toast("Didn't catch that"); return; }
+      if (!gotResult || !text) {
+        if (!isRetry && !srRetryUsed) {
+          srRetryUsed = true;
+          setTimeout(() => startListening(true), 1000);
+          return;
+        }
+        setState("ready"); toast("Didn't catch that"); srRetryUsed = false; return;
+      }
+      srRetryUsed = false;
       lastOriginal = text;
-      await new Promise(r => setTimeout(r, isIOS ? 250 : 0)); // let iOS release the mic before playback
+      await new Promise(r => setTimeout(r, isIOS ? 250 : 0));
       await doTranslate(text);
     };
     try { rec.start(); } catch { toast("Could not start microphone"); setState("ready"); }
@@ -651,37 +740,35 @@ body {
     if (!recognition) return;
     setState("processing");
     try { recognition.stop(); } catch {}
-    clearTimeout(srTimer);
+    clearTimeout(srTimer); clearTimeout(srNoResultTimer);
     srTimer = setTimeout(() => { if (state === "processing") { try { recognition.abort(); } catch {} setState("ready"); } }, 6000);
   }
 
   async function ftch(url, opts) {
     const c = new AbortController();
-    const t = setTimeout(() => c.abort(), opts && opts.ms || 7000);
-    try { return await fetch(url, Object.assign({ signal: c.signal }, opts || {})); }
+    const ms = (opts && opts.ms) || 5000;
+    const t = setTimeout(() => c.abort(), ms);
+    try { return await fetch(url, Object.assign({}, opts || {}, { signal: c.signal })); }
     finally { clearTimeout(t); }
   }
-  async function translateViaGoogleKey(q, from, to, key) {
+  async function translateViaGoogleKey(q, from, to, key, signal) {
     const r = await ftch("https://translation.googleapis.com/language/translate/v2?key=" + encodeURIComponent(key), {
       method: "POST", headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ q, source: from, target: to, format: "text" })
+      body: JSON.stringify({ q, source: from, target: to, format: "text" }),
+      signal, ms: 5000
     });
-    if (!r.ok) throw new Error("API " + r.status);
+    if (!r.ok) throw new Error("API Key Error (" + r.status + ")");
     const j = await r.json();
-    return j.data.translations[0].translatedText;
+    const t = j?.data?.translations?.[0]?.translatedText;
+    if (!t) throw new Error("API Key Error (empty)");
+    return t;
   }
-  async function translateViaGTX(q, from, to) {
-    const r = await ftch("https://translate.googleapis.com/translate_a/single?client=gtx&dt=t&sl=" + from + "&tl=" + to + "&q=" + encodeURIComponent(q));
-    if (!r.ok) throw new Error("GTX " + r.status);
-    const j = await r.json();
-    return (j[0] || []).map(x => x[0]).join("");
-  }
-  async function translateViaMyMemory(q, from, to) {
-    const r = await ftch("https://api.mymemory.translated.net/get?q=" + encodeURIComponent(q) + "&langpair=" + from + "|" + to);
-    if (!r.ok) throw new Error("MyMemory " + r.status);
+  async function translateViaMyMemory(q, from, to, signal) {
+    const r = await ftch("https://api.mymemory.translated.net/get?q=" + encodeURIComponent(q) + "&langpair=" + from + "|" + to, { signal, ms: 5000 });
+    if (!r.ok) throw new Error("Network Error (" + r.status + ")");
     const j = await r.json();
     const t = j?.responseData?.translatedText;
-    if (!t || t === q) throw new Error("Empty");
+    if (!t || t === q) throw new Error("Empty translation");
     return t;
   }
   const tcache = new Map();
@@ -689,32 +776,55 @@ body {
     const ck = from + to + text;
     if (tcache.has(ck)) return tcache.get(ck);
     const key = ($("apiKey")?.value || store.get("apiKey", "")).trim();
-    let out = null;
-    if (key) { try { out = await translateViaGoogleKey(text, from, to, key); } catch {} }
-    if (!out) { try { out = await translateViaGTX(text, from, to); } catch {} }
-    if (!out) { try { out = await translateViaMyMemory(text, from, to); } catch {} }
-    if (!out) throw new Error("Translation failed");
+    const controllers = [];
+    const make = (fn) => {
+      const c = new AbortController();
+      controllers.push(c);
+      return fn(c.signal).then(v => { controllers.forEach(x => { try { x.abort(); } catch {} }); return v; });
+    };
+    const tasks = [];
+    if (key) tasks.push(make(sig => translateViaGoogleKey(text, from, to, key, sig)));
+    tasks.push(make(sig => translateViaMyMemory(text, from, to, sig)));
+    let out = null, lastErr = null;
+    try {
+      out = await Promise.any(tasks);
+    } catch (agg) {
+      const errs = (agg && agg.errors) || [];
+      lastErr = errs[0] || agg;
+      const msg = String(lastErr && lastErr.message || lastErr || "");
+      if (/abort|AbortError/i.test(msg)) lastErr = new Error("Network Timeout");
+      else if (/API Key/i.test(msg)) lastErr = new Error("API Key Error");
+      else if (!navigator.onLine) lastErr = new Error("You are offline");
+      else lastErr = new Error(msg.includes("Network") ? msg : "Translation failed");
+    }
+    if (!out) throw lastErr || new Error("Translation failed");
     tcache.set(ck, out); if (tcache.size > 60) tcache.delete(tcache.keys().next().value);
     return out;
   }
+  let pendingTranslateText = "";
   async function doTranslate(text) {
+    pendingTranslateText = text;
     setState("translating");
     $("origText").textContent = text;
     $("transText").textContent = "…";
+    $("transError").classList.remove("show");
     $("transCard").classList.add("show");
     const outLang = LANG[dir[1]].tts;
     try {
       const out = await translate(text, LANG[dir[0]].short, LANG[dir[1]].short);
       lastTranslated = out; lastLang = outLang;
       $("transText").textContent = out;
+      $("transError").classList.remove("show");
       addToHistory(text, out, dir[0], dir[1]);
       setState("ready_to_speak");
       if (store.get("autoSpeak", true)) await speak(out, outLang);
     } catch (e) {
-      $("transText").textContent = "Translation failed";
+      const reason = (e && e.message) || "Translation failed";
+      $("transText").textContent = "—";
+      $("transErrorMsg").textContent = reason;
+      $("transError").classList.add("show");
       setState("error");
-      toast(navigator.onLine ? "Translation failed — try again" : "You are offline");
-      setTimeout(() => setState("ready"), 2000);
+      toast(reason);
     }
   }
   function addToHistory(orig, trans, from, to) {
@@ -748,11 +858,18 @@ body {
     bar.className = "status-bar"; guide.className = "guide";
     left.className = "avatar left"; right.className = "avatar right";
     wave.classList.remove("active"); rec.classList.remove("listening");
-    rec.disabled = false;
     const speaking = s === "speaking";
     spk.disabled = !(speaking || (s !== "translating" && s !== "listening" && s !== "processing" && (lastTranslated || ($("textInput").value || "").trim())));
     $("speakLabel").textContent = speaking ? "Stop" : "Speak";
-    recLabel.textContent = "Record";
+    if (isIOS && standalone) {
+      rec.disabled = true;
+      rec.classList.add("safari-mode");
+      recLabel.textContent = "Safari";
+    } else {
+      rec.disabled = false;
+      rec.classList.remove("safari-mode");
+      recLabel.textContent = "Record";
+    }
     const map = {
       ready: { status: "Ready", icon: "👉", text: "Tap Record or type text" },
       listening: { status: "Listening…", icon: "🎤", text: "Speak now — tap Stop when done", left: "listening", bar: "listening", guideCls: "listening", recCls: "listening", label: "Stop" },
@@ -771,8 +888,8 @@ body {
     if (m.guideCls) guide.classList.add(m.guideCls);
     if (m.left) left.classList.add(m.left);
     if (m.right) right.classList.add(m.right);
-    if (m.recCls) rec.classList.add(m.recCls);
-    if (m.label) recLabel.textContent = m.label;
+    if (m.recCls && !(isIOS && standalone)) rec.classList.add(m.recCls);
+    if (m.label && !(isIOS && standalone)) recLabel.textContent = m.label;
     if (m.wave) wave.classList.add("active");
   }
 
@@ -848,8 +965,12 @@ body {
   function bind() {
     $("btnRecord").onclick = () => {
       unlockAudio();
+      if (isIOS && standalone) {
+        applyStandaloneMicUI();
+        return;
+      }
       if (state === "listening") stopListening();
-      else startListening();
+      else startListening(false);
     };
     $("btnSpeak").onclick = async () => {
       unlockAudio();                       // must happen inside this tap for iPhone
@@ -866,9 +987,29 @@ body {
       stopSpeech(); stopListening();
       lastOriginal = lastTranslated = "";
       $("transCard").classList.remove("show");
+      $("transError").classList.remove("show");
       $("textInput").value = "";
       setState("ready"); toast("New conversation");
     };
+    const banner = $("safariBanner");
+    if (banner) {
+      banner.onclick = async () => {
+        const url = "https://rafattky-eng.github.io/InterpretLiveNow/";
+        try {
+          await navigator.clipboard.writeText(url);
+          toast("Link copied. Paste into Safari.");
+        } catch {
+          toast(url);
+        }
+      };
+    }
+    const retryBtn = $("btnRetryTranslate");
+    if (retryBtn) {
+      retryBtn.onclick = () => {
+        const t = pendingTranslateText || $("origText").textContent || $("textInput").value.trim();
+        if (t) doTranslate(t);
+      };
+    }
     $("btnSave").onclick = saveChat;
     $("btnSettings").onclick = () => {
       $("settingsOverlay").classList.add("open");
@@ -924,6 +1065,7 @@ body {
     renderHistory();
     setState("ready");
     bind(); inited = true;
+    applyStandaloneMicUI();
     if ("serviceWorker" in navigator) navigator.serviceWorker.register("sw.js").catch(() => {});
     document.body.addEventListener("touchend", unlockAudio, { once: true, passive: true });
     document.body.addEventListener("click", unlockAudio, { once: true });
